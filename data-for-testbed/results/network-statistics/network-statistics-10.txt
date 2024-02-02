@@ -1,0 +1,11 @@
+1: Max Upload: 864 Kbps, Max Download: 10599 Kbps, Latency: 40.48 ms, Packet Loss: 0.0037%
+2: Max Upload: 686 Kbps, Max Download: 18935 Kbps, Latency: 39.93 ms, Packet Loss: 0.0000%
+3: Max Upload: 765 Kbps, Max Download: 17155 Kbps, Latency: 27.75 ms, Packet Loss: 0.0131%
+4: Max Upload: 1162 Kbps, Max Download: 5206 Kbps, Latency: 28.18 ms, Packet Loss: 0.0000%
+5: Max Upload: 19569 Kbps, Max Download: 41864 Kbps, Latency: 17.99 ms, Packet Loss: 0.0007%
+6: Max Upload: 700 Kbps, Max Download: 8011 Kbps, Latency: 30.31 ms, Packet Loss: 0.0000%
+7: Max Upload: 649 Kbps, Max Download: 15323 Kbps, Latency: 26.07 ms, Packet Loss: 0.0014%
+8: Max Upload: 640 Kbps, Max Download: 12799 Kbps, Latency: 27.73 ms, Packet Loss: 0.0000%
+9: Max Upload: 754 Kbps, Max Download: 1824 Kbps, Latency: 17.30 ms, Packet Loss: 0.0050%
+10: Max Upload: 778 Kbps, Max Download: 7800 Kbps, Latency: 21.82 ms, Packet Loss: 0.0063%
+lectureStudioServer: Max Upload: 28910 Kbps, Max Download: 79641 Kbps, Latency: 40.20 ms, Packet Loss: 0.0024%

@@ -1,0 +1,29 @@
+{
+  "superpeers": [
+    {
+      "name": "4"
+    }
+  ],
+  "peer2peer": [
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "1"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "2"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "3"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "4"
+    },
+    {
+      "sourceName": "4",
+      "targetName": "5"
+    }
+  ]
+}

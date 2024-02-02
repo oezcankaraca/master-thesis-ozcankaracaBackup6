@@ -1,0 +1,37 @@
+[
+  {
+    "sourceName": "lectureStudioServer",
+    "targetName": "1",
+    "bandwidth": 5962,
+    "latency": "56.71",
+    "loss": "0.0024"
+  },
+  {
+    "sourceName": "lectureStudioServer",
+    "targetName": "2",
+    "bandwidth": 3302,
+    "latency": "59.79",
+    "loss": "0.0150"
+  },
+  {
+    "sourceName": "lectureStudioServer",
+    "targetName": "3",
+    "bandwidth": 5962,
+    "latency": "63.04",
+    "loss": "0.0024"
+  },
+  {
+    "sourceName": "lectureStudioServer",
+    "targetName": "4",
+    "bandwidth": 5962,
+    "latency": "57.22",
+    "loss": "0.0024"
+  },
+  {
+    "sourceName": "lectureStudioServer",
+    "targetName": "5",
+    "bandwidth": 5962,
+    "latency": "58.80",
+    "loss": "0.0079"
+  }
+]

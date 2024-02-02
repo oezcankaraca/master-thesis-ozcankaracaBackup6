@@ -1,0 +1,52 @@
+{
+  "superpeers": [
+    {
+      "name": "2"
+    },
+    {
+      "name": "5"
+    }
+  ],
+  "peer2peer": [
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "1"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "2"
+    },
+    {
+      "sourceName": "2",
+      "targetName": "3"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "4"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "5"
+    },
+    {
+      "sourceName": "5",
+      "targetName": "6"
+    },
+    {
+      "sourceName": "5",
+      "targetName": "7"
+    },
+    {
+      "sourceName": "2",
+      "targetName": "8"
+    },
+    {
+      "sourceName": "5",
+      "targetName": "9"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "10"
+    }
+  ]
+}

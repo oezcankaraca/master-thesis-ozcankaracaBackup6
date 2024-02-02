@@ -1,0 +1,18 @@
+# Starting with the Alpine image as a base
+FROM alpine:latest
+
+# Updating and installing necessary packages
+# apk is the package manager for Alpine
+RUN apk update && \
+    apk add openjdk11-jdk iproute2 iperf3 tcpdump netcat-openbsd iputils
+
+# Setting the working directory inside the container
+WORKDIR /app
+
+# Copying only the CentralManagementServer.java file into the working directory
+COPY TrackerPeer.java /app/
+
+# Compiling the Java program
+# javac is the compiler for the Java programming language
+RUN javac TrackerPeer.java
+

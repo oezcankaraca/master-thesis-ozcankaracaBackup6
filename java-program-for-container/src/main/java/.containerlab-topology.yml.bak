@@ -1,0 +1,160 @@
+name: containerlab-topology
+prefix: p2p
+
+mgmt:
+  network: fixedips
+  ipv4-subnet: 172.100.100.0/24
+topology:
+  nodes:
+    trackerPeer:
+      kind: linux
+      mgmt-ipv4: 172.100.100.11
+      image: image-tracker
+      env:
+        NUMBER_OF_TOTAL_PEERS: 6
+      exec:
+        - sleep 5
+      cmd: "java -cp /app TrackerPeer"
+      ports:
+        - "5050:5050"
+
+    lectureStudioServer:
+      kind: linux
+      mgmt-ipv4: 172.100.100.12
+      image: image-testbed
+      env:
+        NUMBER_OF_TOTAL_PEERS: 6
+        PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
+        SOURCE_PEER: lectureStudioServer
+        TARGET_PEERS: 1,2,3,4,5
+        CONNECTION_5: eth5:172.20.25.2, 5:172.20.25.3
+        CONNECTION_4: eth4:172.20.24.2, 4:172.20.24.3
+        CONNECTION_3: eth3:172.20.23.2, 3:172.20.23.3
+        CONNECTION_2: eth2:172.20.22.2, 2:172.20.22.3
+        CONNECTION_1: eth1:172.20.21.2, 1:172.20.21.3
+        MAIN_CLASS: LectureStudioServer
+      labels:
+        role: sender
+        group: server
+      binds:
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/mydocument.pdf:/app/mydocument.pdf
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/connection-details/connection-details-5.json:/app/connection-details-5.json
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/script-for-connection/connection-details-superpeer.sh:/app/connection-details-superpeer.sh
+      exec:
+        - sleep 5
+        - chmod +x /app/connection-details-superpeer.sh
+        - ./connection-details-superpeer.sh
+      ports:
+        - "7070:7070"
+
+    1:
+      kind: linux
+      image: image-testbed
+      env:
+        NUMBER_OF_TOTAL_PEERS: 6
+        PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
+        SOURCE_PEER: 1
+        IP_ADDRES: 172.20.21.3
+        SUPER_PEER: lectureStudioServer
+        SUPER_PEER_IP_ADDRES: 172.20.21.2
+        MAIN_CLASS: Peer
+      labels:
+        role: receiver
+        group: peer
+      binds:
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/script-for-connection/connection-details-peer.sh:/app/connection-details-peer.sh
+      exec:
+        - sleep 5
+        - /bin/sh -c 'while ! ping -c 1 172.100.100.12 > /dev/null; do echo "Waiting for lectureStudioServer"; sleep 1; done'
+        - chmod +x /app/connection-details-peer.sh
+        - ./connection-details-peer.sh
+    2:
+      kind: linux
+      image: image-testbed
+      env:
+        NUMBER_OF_TOTAL_PEERS: 6
+        PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
+        SOURCE_PEER: 2
+        IP_ADDRES: 172.20.22.3
+        SUPER_PEER: lectureStudioServer
+        SUPER_PEER_IP_ADDRES: 172.20.22.2
+        MAIN_CLASS: Peer
+      labels:
+        role: receiver
+        group: peer
+      binds:
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/script-for-connection/connection-details-peer.sh:/app/connection-details-peer.sh
+      exec:
+        - sleep 5
+        - /bin/sh -c 'while ! ping -c 1 172.100.100.12 > /dev/null; do echo "Waiting for lectureStudioServer"; sleep 1; done'
+        - chmod +x /app/connection-details-peer.sh
+        - ./connection-details-peer.sh
+    3:
+      kind: linux
+      image: image-testbed
+      env:
+        NUMBER_OF_TOTAL_PEERS: 6
+        PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
+        SOURCE_PEER: 3
+        IP_ADDRES: 172.20.23.3
+        SUPER_PEER: lectureStudioServer
+        SUPER_PEER_IP_ADDRES: 172.20.23.2
+        MAIN_CLASS: Peer
+      labels:
+        role: receiver
+        group: peer
+      binds:
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/script-for-connection/connection-details-peer.sh:/app/connection-details-peer.sh
+      exec:
+        - sleep 5
+        - /bin/sh -c 'while ! ping -c 1 172.100.100.12 > /dev/null; do echo "Waiting for lectureStudioServer"; sleep 1; done'
+        - chmod +x /app/connection-details-peer.sh
+        - ./connection-details-peer.sh
+    4:
+      kind: linux
+      image: image-testbed
+      env:
+        NUMBER_OF_TOTAL_PEERS: 6
+        PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
+        SOURCE_PEER: 4
+        IP_ADDRES: 172.20.24.3
+        SUPER_PEER: lectureStudioServer
+        SUPER_PEER_IP_ADDRES: 172.20.24.2
+        MAIN_CLASS: Peer
+      labels:
+        role: receiver
+        group: peer
+      binds:
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/script-for-connection/connection-details-peer.sh:/app/connection-details-peer.sh
+      exec:
+        - sleep 5
+        - /bin/sh -c 'while ! ping -c 1 172.100.100.12 > /dev/null; do echo "Waiting for lectureStudioServer"; sleep 1; done'
+        - chmod +x /app/connection-details-peer.sh
+        - ./connection-details-peer.sh
+    5:
+      kind: linux
+      image: image-testbed
+      env:
+        NUMBER_OF_TOTAL_PEERS: 6
+        PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
+        SOURCE_PEER: 5
+        IP_ADDRES: 172.20.25.3
+        SUPER_PEER: lectureStudioServer
+        SUPER_PEER_IP_ADDRES: 172.20.25.2
+        MAIN_CLASS: Peer
+      labels:
+        role: receiver
+        group: peer
+      binds:
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/script-for-connection/connection-details-peer.sh:/app/connection-details-peer.sh
+      exec:
+        - sleep 5
+        - /bin/sh -c 'while ! ping -c 1 172.100.100.12 > /dev/null; do echo "Waiting for lectureStudioServer"; sleep 1; done'
+        - chmod +x /app/connection-details-peer.sh
+        - ./connection-details-peer.sh
+  links:
+    - endpoints: [lectureStudioServer:eth1, 1:eth1]
+    - endpoints: [lectureStudioServer:eth2, 2:eth1]
+    - endpoints: [lectureStudioServer:eth3, 3:eth1]
+    - endpoints: [lectureStudioServer:eth4, 4:eth1]
+    - endpoints: [lectureStudioServer:eth5, 5:eth1]

@@ -1,0 +1,40 @@
+Info: Reading input data from: /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/inputs/input-data-5.json
+Info: Processing peer data.
+Info: Processing connection data.
+
+--Connection Analysis--
+
+Source: 4 (maxUpload: 26061 Kbps) - Target: 2 (maxDownload: 3302 Kbps) - Bandwidth: 3302 Kbps - Latency: 36.61 ms - Loss: 0.02%
+Source: 2 (maxUpload: 915 Kbps) - Target: lectureStudioServer (maxDownload: 79012 Kbps) - Bandwidth: 915 Kbps - Latency: 59.79 ms - Loss: 0.02%
+Source: 1 (maxUpload: 23571 Kbps) - Target: 5 (maxDownload: 257252 Kbps) - Bandwidth: 23571 Kbps - Latency: 35.11 ms - Loss: 0.01%
+Source: 3 (maxUpload: 14253 Kbps) - Target: 5 (maxDownload: 257252 Kbps) - Bandwidth: 14253 Kbps - Latency: 41.43 ms - Loss: 0.01%
+Source: 4 (maxUpload: 26061 Kbps) - Target: 1 (maxDownload: 213416 Kbps) - Bandwidth: 26061 Kbps - Latency: 33.53 ms - Loss: 0.00%
+Source: 2 (maxUpload: 915 Kbps) - Target: 3 (maxDownload: 346100 Kbps) - Bandwidth: 915 Kbps - Latency: 42.43 ms - Loss: 0.02%
+Source: 1 (maxUpload: 23571 Kbps) - Target: 2 (maxDownload: 3302 Kbps) - Bandwidth: 3302 Kbps - Latency: 36.11 ms - Loss: 0.02%
+Source: 4 (maxUpload: 26061 Kbps) - Target: lectureStudioServer (maxDownload: 79012 Kbps) - Bandwidth: 26061 Kbps - Latency: 57.22 ms - Loss: 0.00%
+Source: 3 (maxUpload: 14253 Kbps) - Target: 4 (maxDownload: 356266 Kbps) - Bandwidth: 14253 Kbps - Latency: 39.85 ms - Loss: 0.00%
+Source: 2 (maxUpload: 915 Kbps) - Target: 4 (maxDownload: 356266 Kbps) - Bandwidth: 915 Kbps - Latency: 36.61 ms - Loss: 0.02%
+Source: 5 (maxUpload: 21059 Kbps) - Target: 1 (maxDownload: 213416 Kbps) - Bandwidth: 21059 Kbps - Latency: 35.11 ms - Loss: 0.01%
+Source: 5 (maxUpload: 21059 Kbps) - Target: lectureStudioServer (maxDownload: 79012 Kbps) - Bandwidth: 21059 Kbps - Latency: 58.80 ms - Loss: 0.01%
+Source: 2 (maxUpload: 915 Kbps) - Target: 1 (maxDownload: 213416 Kbps) - Bandwidth: 915 Kbps - Latency: 36.11 ms - Loss: 0.02%
+Source: 5 (maxUpload: 21059 Kbps) - Target: 4 (maxDownload: 356266 Kbps) - Bandwidth: 21059 Kbps - Latency: 35.62 ms - Loss: 0.01%
+Source: 3 (maxUpload: 14253 Kbps) - Target: lectureStudioServer (maxDownload: 79012 Kbps) - Bandwidth: 14253 Kbps - Latency: 63.04 ms - Loss: 0.00%
+Source: 2 (maxUpload: 915 Kbps) - Target: 5 (maxDownload: 257252 Kbps) - Bandwidth: 915 Kbps - Latency: 38.19 ms - Loss: 0.02%
+Source: lectureStudioServer (maxUpload: 27152 Kbps) - Target: 3 (maxDownload: 346100 Kbps) - Bandwidth: 27152 Kbps - Latency: 63.04 ms - Loss: 0.00%
+Source: 3 (maxUpload: 14253 Kbps) - Target: 2 (maxDownload: 3302 Kbps) - Bandwidth: 3302 Kbps - Latency: 42.43 ms - Loss: 0.02%
+Source: 1 (maxUpload: 23571 Kbps) - Target: 4 (maxDownload: 356266 Kbps) - Bandwidth: 23571 Kbps - Latency: 33.53 ms - Loss: 0.00%
+Source: lectureStudioServer (maxUpload: 27152 Kbps) - Target: 4 (maxDownload: 356266 Kbps) - Bandwidth: 27152 Kbps - Latency: 57.22 ms - Loss: 0.00%
+Source: 5 (maxUpload: 21059 Kbps) - Target: 2 (maxDownload: 3302 Kbps) - Bandwidth: 3302 Kbps - Latency: 38.19 ms - Loss: 0.02%
+Source: 4 (maxUpload: 26061 Kbps) - Target: 5 (maxDownload: 257252 Kbps) - Bandwidth: 26061 Kbps - Latency: 35.62 ms - Loss: 0.01%
+Source: lectureStudioServer (maxUpload: 27152 Kbps) - Target: 1 (maxDownload: 213416 Kbps) - Bandwidth: 27152 Kbps - Latency: 56.71 ms - Loss: 0.00%
+Source: 1 (maxUpload: 23571 Kbps) - Target: lectureStudioServer (maxDownload: 79012 Kbps) - Bandwidth: 23571 Kbps - Latency: 56.71 ms - Loss: 0.00%
+Source: 4 (maxUpload: 26061 Kbps) - Target: 3 (maxDownload: 346100 Kbps) - Bandwidth: 26061 Kbps - Latency: 39.85 ms - Loss: 0.00%
+Source: 1 (maxUpload: 23571 Kbps) - Target: 3 (maxDownload: 346100 Kbps) - Bandwidth: 23571 Kbps - Latency: 39.35 ms - Loss: 0.00%
+Source: lectureStudioServer (maxUpload: 27152 Kbps) - Target: 5 (maxDownload: 257252 Kbps) - Bandwidth: 27152 Kbps - Latency: 58.80 ms - Loss: 0.01%
+Source: lectureStudioServer (maxUpload: 27152 Kbps) - Target: 2 (maxDownload: 3302 Kbps) - Bandwidth: 3302 Kbps - Latency: 59.79 ms - Loss: 0.02%
+Source: 3 (maxUpload: 14253 Kbps) - Target: 1 (maxDownload: 213416 Kbps) - Bandwidth: 14253 Kbps - Latency: 39.35 ms - Loss: 0.00%
+Source: 5 (maxUpload: 21059 Kbps) - Target: 3 (maxDownload: 346100 Kbps) - Bandwidth: 21059 Kbps - Latency: 41.43 ms - Loss: 0.01%
+
+Info: Analyzing mesh completeness.
+Info: Checking for missing connections in the full mesh network.
+Info: There is a full mesh among all peers including the lectureStudioServer.

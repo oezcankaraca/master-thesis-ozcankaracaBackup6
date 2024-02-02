@@ -1,0 +1,44 @@
+{
+  "peer2peer": [
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "1"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "2"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "3"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "4"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "5"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "6"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "7"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "8"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "9"
+    },
+    {
+      "sourceName": "lectureStudioServer",
+      "targetName": "10"
+    }
+  ]
+}
