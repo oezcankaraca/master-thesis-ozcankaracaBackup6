@@ -1,0 +1,8 @@
+TestID;Number of Peers;With Super-Peers;Total Duration [s];Same PDF File;Total Received Bytes;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%];Minimum Transfer Error Rate [%];Average Transfer Error Rate [%];Maximum Transfer Error Rate [%]
+Test1;51;true;24.17;;1042157;18.44;0.11;3.73;15.36;0.81;8.82;21.62;10.31;12.55;;;;;;;1.17;4.18;55.92
+Test2;51;true;59.51;;3197743;45.91;0.11;11.71;47.00;3.29;26.92;55.94;33.19;38.63;;;;;;;0.85;4.20;65.47
+Test3;51;true;88.02;;5269767;64.23;0.11;17.01;77.40;3.96;44.23;80.34;54.59;61.25;;;;;;;0.79;2.05;25.32
+Test4;51;true;166.99;;10705702;119.19;0.12;32.56;157.20;7.06;89.71;157.37;110.74;122.27;;;;;;;0.74;1.11;10.09
+Test5;51;true;231.19;;15368312;168.15;0.11;46.07;225.78;10.02;128.75;225.94;158.91;174.82;;;;;;;0.74;.97;6.35
+Test6;51;true;321.81;;21408647;228.18;0.11;62.94;314.46;13.95;179.29;314.60;221.30;242.24;;;;;;;0.73;.85;2.82
+Test7;51;true;477.83;;32116471;339.22;0.11;94.14;471.63;20.85;268.91;471.77;331.88;363.05;;;;;;;0.71;.78;1.84

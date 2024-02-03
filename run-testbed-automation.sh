@@ -7,12 +7,11 @@ printf "\nStep Started: Choosing test case and moving data file.\n\n"
 # Define arrays for the variable values
 declare -a HAS_SUPERPEER_VALUES=("true" "false")
 #declare -a NUMBER_OF_PEERS_VALUES=("5" "10" "20" "35" "50" "75")
-declare -a NUMBER_OF_PEERS_VALUES=("5" "75")
-declare -a CHOICE_OF_PDF_MB_VALUES=("30" "3" "5" "10" "15" "20" "1")
+declare -a NUMBER_OF_PEERS_VALUES=("50" "75")
+declare -a CHOICE_OF_PDF_MB_VALUES=("1" "3" "5" "10" "15" "20" "30")
 
 declare -A calculated_times
 declare -A measured_times
-
 
 # Iterate over each combination of variable values
 for HAS_SUPERPEER in "${HAS_SUPERPEER_VALUES[@]}"; do
@@ -427,7 +426,7 @@ if [[ -n "$trackerPeerId" ]]; then
         echo "Error: Total Duration not found in Tracker Peer Logs."
     fi
 
-    printf "\n----------------------------------------------------------------------------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------------------------------------------------------------------------"
 fi
 
 if [ $count_containers -gt 0 ]; then
@@ -439,7 +438,7 @@ else
 fi
 
 if $all_containers_processed; then
-    printf "\n--Results related to Connection, File Transfer and Total Time:--\n\n"
+    printf "\n\n--Results related to Connection, File Transfer and Total Time:--\n\n"
     
     printf "\nMax Values:\n"
     printf "Max Connection Time: $max_connection_time ms in Container $max_connection_time_container\n"
@@ -462,7 +461,7 @@ fi
 printf "\n----------------------------------------------------------------------------------------------------------------------------------------\n"
 
 printf "\nInfo: Container check completed. Cleaning up the environment.\n"
-printf "Step Done: Checking Container logs is done.\n"
+printf "\nStep Done: Checking Container logs is done.\n"
 
 #sleep 20 
 
@@ -524,7 +523,7 @@ min_bandwidth_error_rate=${min_bandwidth_error_rate//,/\.}
 avg_bandwidth_error_rate=${avg_bandwidth_error_rate//,/\.}
 
 # Path for the file storing the test ID counter
-TEST_ID_FILE="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/test_id_counter4.txt"
+TEST_ID_FILE="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/test_id_counter5.txt"
 
 # Incrementing the test ID for each run, or starting at 1 if the file doesn't exist
 if [ -f "$TEST_ID_FILE" ]; then
@@ -614,15 +613,16 @@ printf "\nStep Done: Calculating all results is done.\n"
 printf "\nStep Started: Writing all results into CSV file.\n"
 
 # Path for the CSV file to store the results
-CSV_PATH="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed4.csv"
+CSV_PATH="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed5.csv"
 
 # Create a CSV file with headers if it doesn't already exist
 if [ ! -f "$CSV_PATH" ]; then
-    echo "TestID;Number of Peers;With Super-Peers;Total Duration from tracker-peer [s];Same PDF File;Total Received Bytes;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%]" > "$CSV_PATH"
+    echo "TestID;Number of Peers;With Super-Peers;Total Duration [s];Same PDF File;Total Received Bytes;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%];Minimum Transfer Error Rate [%];Average Transfer Error Rate [%];Maximum Transfer Error Rate [%]" > "$CSV_PATH"
 fi
 
-# Append the current test results to the CSV file
-echo "Test$test_id;$(($NUMBER_OF_PEERS_ARG + 1));$HAS_SUPERPEER;$total_duration_sec;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate" >> "$CSV_PATH"
+# Append the current test results to the CSV file along with the new fields for error rates and total duration
+echo "Test$test_id;$(($NUMBER_OF_PEERS_ARG + 1));$HAS_SUPERPEER;$total_duration_sec;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate;$min_error_rate;$avg_error_rate;$max_error_rate" >> "$CSV_PATH"
+
 
 printf "\nStep Done: Writing all results into CSV file is done.\n"
 
