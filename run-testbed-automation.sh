@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # Define arrays for the variable values
-declare -a HAS_SUPERPEER_VALUES=("false" "true")
-declare -a NUMBER_OF_PEERS_VALUES=("5" "10" "20" "35" "50" "75")
-declare -a CHOICE_OF_PDF_VALUES=("1" "3" "5" "10" "15" "20" "30")
+declare -a HAS_SUPERPEER_VALUES=("true" "false")
+#declare -a NUMBER_OF_PEERS_VALUES=("5" "10" "20" "35" "50" "75")
+declare -a NUMBER_OF_PEERS_VALUES=("10" "20" "35" "50" "75")
+declare -a CHOICE_OF_PDF_MB_VALUES=("1" "3" "5" "10" "15" "20" "30")
 
 # Iterate over each combination of variable values
 for HAS_SUPERPEER in "${HAS_SUPERPEER_VALUES[@]}"; do
     for NUMBER_OF_PEERS_ARG in "${NUMBER_OF_PEERS_VALUES[@]}"; do
-        for CHOICE_OF_PDF in "${CHOICE_OF_PDF_VALUES[@]}"; do
-            echo "Running test with HAS_SUPERPEER=$HAS_SUPERPEER, NUMBER_OF_PEERS_ARG=$NUMBER_OF_PEERS_ARG, CHOICE_OF_PDF=$CHOICE_OF_PDF"
+        for CHOICE_OF_PDF_MB in "${CHOICE_OF_PDF_MB_VALUES[@]}"; do
+            echo "Running test with HAS_SUPERPEER=$HAS_SUPERPEER, NUMBER_OF_PEERS_ARG=$NUMBER_OF_PEERS_ARG, CHOICE_OF_PDF_MB=$CHOICE_OF_PDF_MB"
 
 # Base directory path where all project-related files are located
 BASISPFAD="$HOME/Desktop"
@@ -47,7 +48,7 @@ delete_file="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/mydocument.pd
 
 rm -f "$delete_file"
 
-file_name="${CHOICE_OF_PDF}MB.pdf"
+file_name="${CHOICE_OF_PDF_MB}MB.pdf"
 full_path_to_file="${base_path}/${file_name}"
 
 if [ -f "$full_path_to_file" ]; then
@@ -60,7 +61,7 @@ fi
 
 sleep 30
 
-echo "Starting Testbed"
+printf "\nStarting Testbed\n\n"
 
 testbed_and_containerlab() {
 
@@ -83,7 +84,7 @@ testbed_and_containerlab() {
     mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS3" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER"
     sleep 5
     
-    mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS4" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER"
+    mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS4" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER $CHOICE_OF_PDF_MB"
     sleep 5
      
     mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS5" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER"
@@ -440,7 +441,7 @@ min_bandwidth_error_rate=${min_bandwidth_error_rate//,/\.}
 avg_bandwidth_error_rate=${avg_bandwidth_error_rate//,/\.}
 
 # Path for the file storing the test ID counter
-TEST_ID_FILE="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/test_id_counter2.txt"
+TEST_ID_FILE="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/test_id_counter3.txt"
 
 # Incrementing the test ID for each run, or starting at 1 if the file doesn't exist
 if [ -f "$TEST_ID_FILE" ]; then
@@ -522,18 +523,18 @@ echo "Maximum Bandwidth Error Rate: $max_bandwidth_error_rate %"
 printf "\nTotal Duration: $total_duration_sec s\n"
 
 # Path for the CSV file to store the results
-CSV_PATH="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed2.csv"
+CSV_PATH="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed3.csv"
 
 # Create a CSV file with headers if it doesn't already exist
 if [ ! -f "$CSV_PATH" ]; then
-    echo "TestID;Number of Peers;With Super-Peers;Same PDF File;Total Received Bytes;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%];Total Duration from tracker-peer [s]" > "$CSV_PATH"
+    echo "TestID;Number of Peers;With Super-Peers;Total Duration from tracker-peer [s];Same PDF File;Total Received Bytes;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%]" > "$CSV_PATH"
 fi
 
 # Append the current test results to the CSV file
-echo "Test$test_id;$(($NUMBER_OF_PEERS_ARG + 1));$HAS_SUPERPEER;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate;$total_duration_sec" >> "$CSV_PATH"
+echo "Test$test_id;$(($NUMBER_OF_PEERS_ARG + 1));$HAS_SUPERPEER;$total_duration_sec;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate" >> "$CSV_PATH"
 
 printf "\nStep: Cleaning up the Testbed is done.\n"
-printf "\nStopping Testbed\n"
+printf "\nStopping Testbed\n\n"
 
         done
     done

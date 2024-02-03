@@ -153,10 +153,10 @@ public class ConnectionAnalysis {
         }
 
         // Print all connection details
-        printAndWrite("--Connection Analysis--\n");
-        printAndWrite(connectionDetails.toString());
-        System.out.println(
-                    "\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
+        //printAndWrite("--Connection Analysis--\n");
+        //printAndWrite(connectionDetails.toString());
+        //System.out.println(
+        //            "\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
 
         // Perform analysis to check mesh completeness
         printAndWrite("Info: Analyzing mesh completeness.");
@@ -164,9 +164,9 @@ public class ConnectionAnalysis {
 
         // Print analysis results
         if (missingConnections.isEmpty()) {
-            printAndWrite("Info: There is a full mesh among all peers including the lectureStudioServer.");
+            printAndWrite("Success: There is a full mesh among all peers including the lectureStudioServer.");
         } else {
-            printAndWrite("Error: There is NOT a full mesh among all peers including the lectureStudioServer.");
+            printAndWrite("Unsuccess: There is NOT a full mesh among all peers including the lectureStudioServer.");
             printAndWrite("Error: Missing connections:");
             missingConnections.forEach(connection -> printAndWrite(connection));
         }

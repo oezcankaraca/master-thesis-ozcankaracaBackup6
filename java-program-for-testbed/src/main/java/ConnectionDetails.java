@@ -48,6 +48,8 @@ public class ConnectionDetails {
 
     private static boolean useSuperPeers = true;
     private static int numberOfPeers = 10;
+    private static int choiceOfPdfMB = 1;
+    private static int sizeOfPDF = 1;
 
     /**
      * The main method for the program.
@@ -72,6 +74,27 @@ public class ConnectionDetails {
         if (args.length > 1) {
             useSuperPeers = Boolean.parseBoolean(args[1]);
         }
+
+        if (args.length > 2) {
+            choiceOfPdfMB = Integer.parseInt(args[2]);
+        }
+
+        // Adding connection details into to conections
+        if (choiceOfPdfMB == 1) {
+            sizeOfPDF = 1042157;
+        } else if (choiceOfPdfMB == 3) {
+            sizeOfPDF = 3197743;
+        } else if (choiceOfPdfMB == 5) {
+            sizeOfPDF = 5269767;
+        } else if (choiceOfPdfMB == 10) {
+            sizeOfPDF = 10705702;
+        } else if (choiceOfPdfMB == 15) {
+            sizeOfPDF = 15368312;
+        } else if (choiceOfPdfMB == 20) {
+            sizeOfPDF = 21408647;
+        } else if (choiceOfPdfMB == 30) {
+            sizeOfPDF = 32116471;
+        } 
 
         // Get the user's home directory path
         String homeDirectory = System.getProperty("user.home");
@@ -131,14 +154,36 @@ public class ConnectionDetails {
         Map<String, Integer> bandwidthAllocation = calculateBandwidthAllocation(outputJson.getAsJsonArray("peer2peer"),
                 peerStatsMap);
 
+        System.out.println("\n--The size of file--\n");
+        System.out.println(sizeOfPDF);
+
         System.out.println("\n--The allocation of bandwidth for connections--\n");
         for (Map.Entry<String, Integer> entry : bandwidthAllocation.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue() + " Kbps");
         }
 
+        printDataTransferTimes(bandwidthAllocation, sizeOfPDF);
+
         System.out.println("\nInfo: Peer information has been saved to the file: " + pathToPeerInfoFile);
         System.out.println("\n**5.STEP IS DONE.**\n");
     }
+
+    private static void printDataTransferTimes(Map<String, Integer> bandwidthAllocation, int fileSizeBytes) {
+        System.out.println("\n--Data Transfer Times-- for connections\n");
+        for (Map.Entry<String, Integer> entry : bandwidthAllocation.entrySet()) {
+            String connection = entry.getKey();
+            Integer bandwidthKbps = entry.getValue();
+            if (bandwidthKbps != null && bandwidthKbps > 0) {
+                double speedKbytesPerSecond = bandwidthKbps / 8.0;
+                double fileSizeKilobytes = fileSizeBytes / 1000.0;
+                double timeSeconds = fileSizeKilobytes / speedKbytesPerSecond;
+                System.out.println(connection + ": " + String.format("%.2f", timeSeconds) + " seconds");
+            } else {
+                System.out.println(connection + ": Bandwidth or file size data is missing.");
+            }
+        }
+    }
+    
 
     /**
      * Extracts peer IDs from the JSON data and stores them in the given set.
