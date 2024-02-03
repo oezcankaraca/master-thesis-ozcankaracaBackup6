@@ -115,7 +115,7 @@ public class ConnectionDetails {
                 + numberOfPeers + ".json";
         String pathToJsonInput = basePath + "/data-for-testbed/inputs/input-data-" + numberOfPeers + ".json";
 
-        System.out.println("\n**5.STEP: COMBINING CONNECTION DETAILS**\n");
+        System.out.println("\nStep: Combining connection details\n");
         System.out.println("Info: Starting connection details from output-data and input data");
 
         Set<String> peerIds = new HashSet<>();
@@ -165,7 +165,6 @@ public class ConnectionDetails {
         printDataTransferTimes(bandwidthAllocation, sizeOfPDF);
 
         System.out.println("\nInfo: Peer information has been saved to the file: " + pathToPeerInfoFile);
-        System.out.println("\n**5.STEP IS DONE.**\n");
     }
 
     private static void printDataTransferTimes(Map<String, Integer> bandwidthAllocation, int fileSizeBytes) {
@@ -176,7 +175,7 @@ public class ConnectionDetails {
             if (bandwidthKbps != null && bandwidthKbps > 0) {
                 double speedKbytesPerSecond = bandwidthKbps / 8.0;
                 double fileSizeKilobytes = fileSizeBytes / 1000.0;
-                // Berechnung der Zeit in Millisekunden als ganze Zahl
+                // Calculation of the time in milliseconds as an integer
                 int timeMilliseconds = (int) ((fileSizeKilobytes / speedKbytesPerSecond) * 1000);
                 System.out.println(connection + ": " + timeMilliseconds + " milliseconds");
             } else {

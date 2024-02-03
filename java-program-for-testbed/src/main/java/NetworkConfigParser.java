@@ -101,7 +101,7 @@ public class NetworkConfigParser {
         // object
         config = mapper.readValue(new File(configFilePath), new TypeReference<NetworkConfig>() {
         });
-        System.out.println("Info: Network configuration successfully loaded.");
+        System.out.println("Success: Network configuration successfully loaded.");
     }
 
     /**
@@ -231,7 +231,7 @@ public class NetworkConfigParser {
                     + ".json";
         }
 
-        System.out.println("\n**4.STEP: INTEGRATING P2P ALGORITHM**\n");
+        System.out.println("\nStep: Integrating P2P algorithm\n");
 
         // Initializes the NetworkConfigParser with the path to the output data
         NetworkConfigParser parser = new NetworkConfigParser(pathToOutputData);
@@ -261,6 +261,6 @@ public class NetworkConfigParser {
         System.out.println(
                 "\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-        System.out.println("\n**4.STEP IS DONE.**\n");
+        System.out.println("\nStep: Integrating P2P algorithm is done.\n");
     }
 }

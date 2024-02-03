@@ -81,7 +81,7 @@ public class ConnectionAnalysis {
             }
         }
 
-        System.out.println("**3.STEP: ANALYSING CONNECTION DETAILS**\n");
+        System.out.println("Step: Analysing connection details\n");
 
         // Setting up paths for input data and output file
         String homeDirectory = System.getProperty("user.home");
@@ -153,11 +153,13 @@ public class ConnectionAnalysis {
         }
 
         // Print all connection details
-        //printAndWrite("--Connection Analysis--\n");
-        //printAndWrite(connectionDetails.toString());
-        //System.out.println(
-        //            "\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
-
+        /** 
+        printAndWrite("--Connection Analysis--\n");
+        printAndWrite(connectionDetails.toString());
+        System.out.println(
+                    "\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
+        */
+        
         // Perform analysis to check mesh completeness
         printAndWrite("Info: Analyzing mesh completeness.");
         Set<String> missingConnections = checkFullMesh(allConnections, peerNames);
@@ -171,7 +173,7 @@ public class ConnectionAnalysis {
             missingConnections.forEach(connection -> printAndWrite(connection));
         }
         
-        System.out.println("\n**3.STEP IS DONE.**\n"); 
+        System.out.println("\nStep: Analysing connection details is done.\n"); 
 
         // Write analysis results to the file and close the stream
         fileOutput.close();

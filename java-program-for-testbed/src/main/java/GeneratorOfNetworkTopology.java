@@ -111,9 +111,9 @@ public class GeneratorOfNetworkTopology {
             }
             System.out.println(
                     "\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
-            System.out.println("\nInfo: Simulated network data was written to the file: " + pathToOutput);
+            System.out.println("\nSuccess: Simulated network data was written to the file: " + pathToOutput);
         } catch (IOException e) {
-            System.err.println("Error: Error while writing the file: " + e.getMessage());
+            System.err.println("Unsuccess: Error while writing the file: " + e.getMessage());
         }
 
         System.out.println("\n**1.STEP IS DONE.**\n");
@@ -127,7 +127,7 @@ public class GeneratorOfNetworkTopology {
         // Define the path for the JSON file that will represent the network topology
         String pathToInputData = basePath + "/data-for-testbed/inputs/input-10/input-data-" + numberOfPeers + ".json";
 
-        System.out.println("**2.STEP: GENERATING NETWORK TOPOLOGY**\n");
+        System.out.println("Step: Generating network topology\n");
 
         // Generate a JSON object representing the input data for network topology
         JsonObject inputDataObject = generateInputDataObject(peerStatsList);
@@ -256,7 +256,7 @@ public class GeneratorOfNetworkTopology {
      * @param filePath   The file path where the JSON data will be saved.
      */
     private static void generateInputDataJsonFile(JsonObject jsonObject, String filePath) {
-        System.out.println("Info: Writing input data to JSON file: " + filePath);
+        System.out.println("Success: Writing input data to JSON file: " + filePath);
 
         try (FileWriter file = new FileWriter(filePath)) {
 
@@ -264,7 +264,7 @@ public class GeneratorOfNetworkTopology {
             new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject, file);
 
             System.out.println("Info: Input data JSON has been saved to the file: " + filePath);
-            System.out.println("\n**2.STEP IS DONE.**\n");
+            System.out.println("\nStep: Generating network topology is done.\n");
 
         } catch (IOException e) {
             System.err.println("Error: Error encountered while writing to JSON file.");

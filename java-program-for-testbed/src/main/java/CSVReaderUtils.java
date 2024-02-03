@@ -174,7 +174,7 @@ public class CSVReaderUtils {
         String pathToNetworkStatistics = basePath + "/data-for-testbed/results/network-statistics/network-statistics-50.txt";
 
         readCsvDataAndWriteToFile(pathToCSV, pathToNetworkStatistics, numberOfPeers);
-        System.out.println("Info: Network statistics have been written to the file: " + pathToNetworkStatistics + "\n");
+        System.out.println("Success: Network statistics have been written to the file: " + pathToNetworkStatistics + "\n");
 
         // Retrieve and display statistics for a specific peer
         String peerToRetrieve = "lectureStudioServer";

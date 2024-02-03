@@ -6,6 +6,6 @@ public class DataTransferTimeCalculator {
         double dataSizeKilobytes = dataSizeBytes / 1000.0;
         double timeSeconds = dataSizeKilobytes / speedKbytesPerSecond;
 
-        System.out.println("Time required for data transfer: " + timeSeconds + " seconds");
+        System.out.println("Info: Time required for data transfer: " + timeSeconds + " seconds");
     }
 }

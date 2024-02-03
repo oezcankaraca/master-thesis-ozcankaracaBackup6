@@ -40,7 +40,7 @@ public class OnlyFromServerToPeers {
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.setPrettyPrinting();
             gsonBuilder.create().toJson(finalJson, file);
-            System.out.println("\nInfo: Peer information has been saved to the file: " + pathToJsonOutput);
+            System.out.println("\nSuccess: Peer information has been saved to the file: " + pathToJsonOutput);
         } catch (IOException e) {
             e.printStackTrace();
         }

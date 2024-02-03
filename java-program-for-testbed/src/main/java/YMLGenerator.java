@@ -74,7 +74,7 @@ public class YMLGenerator {
 
 
         // Print the beginning of the YML file generation step.
-        System.out.println("\n**6.STEP: CREATING YML FILE FOR TESTBED**\n");
+        System.out.println("\nStep: Creating YML file for testbed.");
 
         try {
 
@@ -104,16 +104,16 @@ public class YMLGenerator {
             generator.generateTopologyFile(includeExtraNodes);
 
             // Log the successful generation of the YML topology file.
-            System.out.println("Info: YML topology file generated successfully.");
+            System.out.println("\nSuccess: YML topology file generated successfully.");
 
         } catch (IOException e) {
             // Log any IOExceptions that occur during the file generation process.
             e.printStackTrace();
-            System.out.println("Error: An error occurred.");
+            System.out.println("Unsuccess: An error occurred.");
         }
 
         // Print the completion of the YML file generation step.
-        System.out.println("\n**6.STEP IS DONE.**\n");
+        System.out.println("\nStep: Creating YML file for testbed is done.\n");
     }
 
     /**

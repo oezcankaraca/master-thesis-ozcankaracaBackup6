@@ -125,7 +125,7 @@ public class CSVSampler {
             }
 
             writer.flush();
-            System.out.println("Info: Sampling completed and data written to " + pathToCSVReduced);
+            System.out.println("Success: Sampling completed and data written to " + pathToCSVReduced);
 
         } catch (IOException | CsvValidationException e) {
             e.printStackTrace();

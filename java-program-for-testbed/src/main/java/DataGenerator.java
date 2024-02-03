@@ -237,9 +237,9 @@ public class DataGenerator {
                 writer.write(dataRow + "\n");
                 System.out.println(dataRow);
             }
-            System.out.println("Info: Simulated network data was written to the file: " + pathToOutput);
+            System.out.println("Success: Simulated network data was written to the file: " + pathToOutput);
         } catch (IOException e) {
-            System.err.println("Error: Error while writing the file: " + e.getMessage());
+            System.err.println("Unsuccess: Error while writing the file: " + e.getMessage());
         }
     }
 }

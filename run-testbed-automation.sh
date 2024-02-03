@@ -1,16 +1,24 @@
 #!/bin/bash
 
+printf "\nStarting Testbed.\n\n"
+
+printf "\nStep Started: Choosing test case and moving data file.\n\n"
+
 # Define arrays for the variable values
 declare -a HAS_SUPERPEER_VALUES=("true" "false")
 #declare -a NUMBER_OF_PEERS_VALUES=("5" "10" "20" "35" "50" "75")
-declare -a NUMBER_OF_PEERS_VALUES=("50" "75")
-declare -a CHOICE_OF_PDF_MB_VALUES=("1" "3" "5" "10" "15" "20" "30")
+declare -a NUMBER_OF_PEERS_VALUES=("5" "75")
+declare -a CHOICE_OF_PDF_MB_VALUES=("30" "3" "5" "10" "15" "20" "1")
+
+declare -A calculated_times
+declare -A measured_times
+
 
 # Iterate over each combination of variable values
 for HAS_SUPERPEER in "${HAS_SUPERPEER_VALUES[@]}"; do
     for NUMBER_OF_PEERS_ARG in "${NUMBER_OF_PEERS_VALUES[@]}"; do
         for CHOICE_OF_PDF_MB in "${CHOICE_OF_PDF_MB_VALUES[@]}"; do
-            echo "Running test with HAS_SUPERPEER=$HAS_SUPERPEER, NUMBER_OF_PEERS_ARG=$NUMBER_OF_PEERS_ARG, CHOICE_OF_PDF_MB=$CHOICE_OF_PDF_MB"
+            echo "Info: Running test with HAS_SUPERPEER=$HAS_SUPERPEER, NUMBER_OF_PEERS_ARG=$NUMBER_OF_PEERS_ARG, CHOICE_OF_PDF_MB=$CHOICE_OF_PDF_MB"
 
 # Base directory path where all project-related files are located
 BASISPFAD="$HOME/Desktop"
@@ -54,14 +62,14 @@ full_path_to_file="${base_path}/${file_name}"
 if [ -f "$full_path_to_file" ]; then
   
     cp "$full_path_to_file" "$destination/mydocument.pdf"
-    echo "File '$file_name' was copied as 'mydocument.pdf' to '$destination'."
+    printf "\nSuccess: File '$file_name' was copied as 'mydocument.pdf' to '$destination'.\n"
 else
-    echo "File '$file_name' was not found."
+    printf "\nUnsucess: File '$file_name' was not found.\n"
 fi
 
-sleep 30
+printf "\nStep Done: Choosing test case and moving data file are done.\n\n"
 
-printf "\nStarting Testbed\n\n"
+sleep 30
 
 testbed_and_containerlab() {
 
@@ -70,7 +78,7 @@ testbed_and_containerlab() {
     
     # Executing specific Java classes based on the configuration of super-peers 
     if [ "$HAS_SUPERPEER" = "false" ]; then
-        echo "Executing OnlyFromServerToPeers class as HAS_SUPERPEER is set to false"
+        echo "Info: Executing OnlyFromServerToPeers class as HAS_SUPERPEER is set to false."
         mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS6" -Dexec.args="$NUMBER_OF_PEERS_ARG"
     fi
     
@@ -84,41 +92,60 @@ testbed_and_containerlab() {
     mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS3" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER"
     sleep 5
     
-    mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS4" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER $CHOICE_OF_PDF_MB"
-    sleep 5
+java_output_file=$(mktemp)
+mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS4" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER $CHOICE_OF_PDF_MB" | tee "$java_output_file"
+
+
+while IFS= read -r line; do
+    if [[ "$line" =~ ([0-9]+):[[:space:]]+([0-9]+)[[:space:]]milliseconds ]]; then
+        container_id="${BASH_REMATCH[1]}"
+        time_ms="${BASH_REMATCH[2]}"
+        calculated_times["p2p-containerlab-topology-$container_id"]=$time_ms
+    fi
+done < "$java_output_file"
+
+rm "$java_output_file"
+
+printf "\n--Calculated Transfer Times for Container--\n"
+
+for container_name in "${!calculated_times[@]}"; do
+    echo "Container $container_name: ${calculated_times[$container_name]} ms"
+done
+
+printf "\nStep Done: Combining connection details is done.\n"
      
     mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS5" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER"
     sleep 5
 
-    printf "\nStep: Generating Docker image\n"
+    printf "Step Started: Generating Docker image.\n"
 
     # Building Docker images for the testbed, tracker-peer, and monitoring tools
     cd "$IMAGE_TESTBED_PATH"
-    printf "\nInfo: Creating Docker Image for Testbed\n"
+    printf "\nInfo: Creating Docker image for testbed.\n"
     #docker build -f dockerfile.testbed -t image-testbed .
     #sleep 5
     
     cd "$IMAGE_TRACKER_PATH"
-    printf "\nInfo: Creating Docker Image for tracker-peer\n"
+    printf "\nInfo: Creating Docker image for tracker-peer.\n"
     #docker build -f dockerfile.tracker -t image-tracker .
     #sleep 5
     
     cd "$IMAGE_ANALYSING_MONITORING_PATH"
-    printf "\nInfo: Creating Docker Image for analysing and monitoring\n"
+    printf "\nInfo: Creating Docker image for analysing and monitoring.\n"
     #docker build -f dockerfile.cadvisor -t image-cadvisor .
     #sleep 5
     #docker build -f dockerfile.grafana -t image-grafana .
     #sleep 5
     #docker build -f dockerfile.prometheus -t image-prometheus .
     
-    printf "\nStep: Genereating Docker image is done.\n"
+    printf "\nStep Done: Genereating Docker image is done.\n"
 
     # Starting the deployment of Containerlab
-    printf "\nStep: Creating Containerlab file\n"
-    printf "\nInfo: Starting Containerlab\n\n"
+    printf "\nStep Started: Creating Containerlab file.\n"
+    printf "\nInfo: Starting Containerlab.\n\n"
     sudo containerlab deploy -t "$CONTAINERLAB_YML"
     sleep 5 
-    printf "\nStep: Creating Containerlab file is done.\n"
+    printf "\nStep Done: Creating Containerlab file is done.\n"
 }
 
 # Function to run validation tests
@@ -160,22 +187,22 @@ testbed_and_containerlab
 
 # Check if the previous command was successful
 if [ $? -eq 0 ]; then
-    printf "Info: Proceeding...\n"
+    printf "\nSuccess: Proceeding\n"
 else
     # If the validation failed, restart the testbed and run validation 
-    printf "Error: Some tests need to be repeated. Restarting the testbed and containerlab..."
+    printf "Unsuccess: Some tests need to be repeated. Restarting the testbed and containerlab."
 
-    printf "Info: Destroying Containerlab and cleaning up the environment:"
+    printf "Info: Destroying Containerlab and cleaning up the environment."
     sudo containerlab destroy -t "$CONTAINERLAB_YML" --cleanup
    
     # Executing the testbed setup and validation process again
     testbed_and_containerlab
-    run_validation
+    #run_validation
 fi
 
 printf "\nInfo: Validation is done.\n"
 
-printf "\nStep: Checking Container logs\n\n"
+printf "\nStep Started: Checking Container logs.\n\n"
 
 lectureStudioServerLog=""
 
@@ -237,14 +264,14 @@ for id in $container_ids; do
         fi
     done
     
-    echo "-----------------------------------------------------------------------------------------------------------------------------------------------"
+    printf "\n-----------------------------------------------------------------------------------------------------------------------------------------------"
     echo ""
 done
     
     if [[ -n "$lectureStudioServerLog" ]]; then
     echo "--Logs for Container p2p-containerlab-topology-lectureStudioServer:--"
     echo "$lectureStudioServerLog"
-    echo "-----------------------------------------------------------------------------------------------------------------------------------------------"
+    printf "\n-----------------------------------------------------------------------------------------------------------------------------------------------"
     fi
 
  for id in $container_ids; do
@@ -257,7 +284,7 @@ done
           "$container_name" == "p2p-containerlab-topology-prometheus" ]]; then
         continue
     fi
-
+    
     container_logs=$(docker logs "$id")
 
     connection_time_line=$(echo "$container_logs" | grep "Conection Time")
@@ -265,7 +292,11 @@ done
 
     transfer_time_line=$(echo "$container_logs" | grep "File Transfer Time")
     transfer_time=$(echo "$transfer_time_line" | grep -oP '(?<=File Transfer Time: )\d+')
-
+    
+    if [ ! -z "$transfer_time" ]; then
+        measured_times["$container_name"]=$transfer_time
+    fi
+    
     total_time_line=$(echo "$container_logs" | grep "Total Time")
     total_time=$(echo "$total_time_line" | grep -oP '(?<=: )\d+')
     
@@ -327,7 +358,7 @@ done
     fi
     
     if ! $valid_time_found; then
-        echo "Error: No valid Connection Time, File Transfer Time, or Total Time found in logs for $container_name"
+        echo "Error: No valid Connection Time, File Transfer Time, or Total Time found in logs for $container_name."
         all_containers_processed=false
     fi
     
@@ -335,6 +366,53 @@ done
         total_total_time=$((total_total_time + total_time))
     fi
 done
+
+min_error_rate=99999999  
+max_error_rate=0
+total_error_rate=0
+count_error_rates=0
+
+printf "\n--Results of Error Rates for Transfer Time--\n"
+
+for container_name in "${!measured_times[@]}"; do
+    measured_time=${measured_times[$container_name]}
+    
+    if [[ -n ${calculated_times[$container_name]+_} ]]; then
+        calculated_time=${calculated_times[$container_name]}
+        
+        if [ -n "$calculated_time" ] && [ -n "$measured_time" ]; then
+            error_rate=$(echo "scale=4; (($measured_time - $calculated_time) / $calculated_time) * 100" | bc)
+            error_rate=$(printf "%.2f" "$error_rate") 
+            echo "$container_name"
+            echo "Measured Time: $measured_time"
+            echo "Calculated Time: $calculated_time"
+            echo "Transfer Time Fehler Rate: $error_rate%"
+            echo ""
+            
+            if (( $(echo "$error_rate < $min_error_rate" | bc -l) )); then
+                min_error_rate=$error_rate
+            fi
+            
+            if (( $(echo "$error_rate > $max_error_rate" | bc -l) )); then
+                max_error_rate=$error_rate
+            fi
+            
+            total_error_rate=$(echo "scale=2; $total_error_rate + $error_rate" | bc)
+            count_error_rates=$((count_error_rates + 1))
+        else
+            echo "Error: No data found for container $container_name."
+        fi
+    else
+        echo "Error: No calculated data found for container $container_name."
+    fi
+done
+
+avg_error_rate=0
+if [ "$count_error_rates" -gt 0 ]; then
+    avg_error_rate=$(echo "scale=2; $total_error_rate / $count_error_rates" | bc)
+fi
+
+printf "-----------------------------------------------------------------------------------------------------------------------------------------------\n"
 
 if [[ -n "$trackerPeerId" ]]; then
     printf "\n--Logs for Container p2p-containerlab-topology-trackerPeer:--\n\n"
@@ -344,9 +422,9 @@ if [[ -n "$trackerPeerId" ]]; then
     total_duration=$(echo "$tracker_peer_logs" | grep "Result: Total duration" | awk '{print $4}')
     
     if [[ -n "$total_duration" ]]; then
-        echo "Total Duration from Tracker Peer: $total_duration ms"
+        echo "Info: Total Duration from Tracker Peer: $total_duration ms"
     else
-        echo "Total Duration not found in Tracker Peer Logs"
+        echo "Error: Total Duration not found in Tracker Peer Logs."
     fi
 
     printf "\n----------------------------------------------------------------------------------------------------------------------------------------"
@@ -357,7 +435,7 @@ if [ $count_containers -gt 0 ]; then
     avg_transfer_time=$((total_transfer_time / count_containers))
     avg_total_time=$(( (total_total_time / count_containers) / 2 ))
 else
-    printf "\nNo valid data for average time calculations.\n"
+    printf "\nError: No valid data for average time calculations.\n"
 fi
 
 if $all_containers_processed; then
@@ -384,7 +462,8 @@ fi
 printf "\n----------------------------------------------------------------------------------------------------------------------------------------\n"
 
 printf "\nInfo: Container check completed. Cleaning up the environment.\n"
-printf "\n**10.STEP IS DONE.**\n"
+printf "Step Done: Checking Container logs is done.\n"
+
 #sleep 20 
 
 #cd "$JAVA_PROGRAM_FOR_VALIDATION_PATH"
@@ -398,7 +477,7 @@ printf "\n**10.STEP IS DONE.**\n"
 #done < <(mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_VALIDATION_CLASS2" -Dexec.args="$NUMBER_OF_PEERS_ARG")
 #sleep 5
 
-printf "\nStep: Cleaning up the Testbed\n"
+printf "\nStep Started: Cleaning up the testbed.\n"
 
 # Destroying the Containerlab setup and cleaning up the environment
 printf "\nInfo: Destroying Containerlab and cleaning up the environment.\n\n"
@@ -409,20 +488,24 @@ printf "\nInfo: Waiting for all Containers to stop.\n"
 sleep 5
 
 # Checking if any containers using the 'image-testbed' image are still running
-if [ -z "$(docker ps -q --filter ancestor=image-testbed)" ]; then
-    printf "Info: All Containers have stopped.\n"
-    echo ""
-    echo "Deleting Docker image:"
-    echo ""
+#if [ -z "$(docker ps -q --filter ancestor=image-testbed)" ]; then
+#    printf "Info: All Containers have stopped.\n"
+#    echo ""
+#    echo "Deleting Docker image:"
+#    echo ""
     #docker image rm image-testbed
     #docker image rm image-tracker
     #docker image rm image-cadvisor
     #docker image rm image-grafana
     #docker image rm image-prometheus
-    printf "\nInfo: Docker image successfully deleted."
-else
-    echo "Info: There are still running Containers. Cannot delete Docker Image."
-fi
+#    printf "\nInfo: Docker image successfully deleted."
+#else
+#    echo "Error: There are still running Containers. Cannot delete Docker image."
+#fi
+
+printf "\nStep Done: Cleaning up the Testbed is done.\n"
+
+printf "\nStep Started: Calculating all results.\n"
 
 # Removing percentage signs and replacing commas with dots for error rates
 max_latency_error_rate=$(echo "$max_latency_error_rate" | tr -d '%')
@@ -520,7 +603,15 @@ echo "Minimum Bandwidth Error Rate: $min_bandwidth_error_rate %"
 echo "Avarage Bandwidth Error Rate: $avg_bandwidth_error_rate %"
 echo "Maximum Bandwidth Error Rate: $max_bandwidth_error_rate %"
 
+echo "Minimum Transfer Error Rate: $min_error_rate %"
+echo "Average Transfer Error Rate: $avg_error_rate %"
+echo "Maximum Transfer Error Rate: $max_error_rate %"
+
 printf "\nTotal Duration: $total_duration_sec s\n"
+
+printf "\nStep Done: Calculating all results is done.\n"
+
+printf "\nStep Started: Writing all results into CSV file.\n"
 
 # Path for the CSV file to store the results
 CSV_PATH="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed4.csv"
@@ -533,9 +624,10 @@ fi
 # Append the current test results to the CSV file
 echo "Test$test_id;$(($NUMBER_OF_PEERS_ARG + 1));$HAS_SUPERPEER;$total_duration_sec;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate" >> "$CSV_PATH"
 
-printf "\nStep: Cleaning up the Testbed is done.\n"
-printf "\nStopping Testbed\n\n"
+printf "\nStep Done: Writing all results into CSV file is done.\n"
 
         done
     done
 done
+
+printf "\nStopping Testbed.\n\n"

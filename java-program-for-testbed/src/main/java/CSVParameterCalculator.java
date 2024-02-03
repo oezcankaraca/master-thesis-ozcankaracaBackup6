@@ -106,7 +106,7 @@ public class CSVParameterCalculator {
 
         // Print out the parameters for each technology in a specific order
         for (Map.Entry<String, Map<String, DescriptiveStatistics>> entry : parameters.entrySet()) {
-            System.out.println("*********Technology: " + entry.getKey() + "*********");
+            System.out.println("--Technology: " + entry.getKey() + "--");
            
             System.out.println("Characteristic: Max Upload Speed");
             System.out.println("Mean: " + entry.getValue().get("maxUpload").getMean());
