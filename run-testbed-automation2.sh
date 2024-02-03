@@ -4,9 +4,10 @@
 declare -a HAS_SUPERPEER_VALUES=("true" "false")
 #declare -a NUMBER_OF_PEERS_VALUES=("5" "10" "20" "35" "50" "75")
 declare -a NUMBER_OF_PEERS_VALUES=("5" "75")
-declare -a CHOICE_OF_PDF_MB_VALUES=("1" "3" "5" "10" "15" "20" "30")
+declare -a CHOICE_OF_PDF_MB_VALUES=("30" "3" "5" "10" "15" "20" "1")
 
 declare -A calculated_times
+declare -A measured_times
 
 # Iterate over each combination of variable values
 for HAS_SUPERPEER in "${HAS_SUPERPEER_VALUES[@]}"; do
@@ -89,7 +90,6 @@ testbed_and_containerlab() {
 java_output_file=$(mktemp)
 mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS4" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER $CHOICE_OF_PDF_MB" | tee "$java_output_file"
 
-echo "Java-Programmausgabe wurde angezeigt."
 
 while IFS= read -r line; do
     if [[ "$line" =~ ([0-9]+):[[:space:]]+([0-9]+)[[:space:]]milliseconds ]]; then
@@ -101,7 +101,8 @@ done < "$java_output_file"
 
 rm "$java_output_file"
 
-echo "Berechnete Übertragungszeiten für Container:"
+echo "Calculated Transfer Times for Container"
+echo ""
 for container_name in "${!calculated_times[@]}"; do
     echo "Container $container_name: ${calculated_times[$container_name]} ms"
 done
@@ -285,6 +286,10 @@ done
     transfer_time_line=$(echo "$container_logs" | grep "File Transfer Time")
     transfer_time=$(echo "$transfer_time_line" | grep -oP '(?<=File Transfer Time: )\d+')
     
+    if [ ! -z "$transfer_time" ]; then
+        measured_times["$container_name"]=$transfer_time
+    fi
+    
     total_time_line=$(echo "$container_logs" | grep "Total Time")
     total_time=$(echo "$total_time_line" | grep -oP '(?<=: )\d+')
     
@@ -355,50 +360,7 @@ done
     fi
 done
 
-# Stellen Sie sicher, dass container_ids als Array oder durch eine andere Methode bereitgestellt wird
-container_ids=( $(docker ps -q) ) # Beispiel zur Erzeugung einer Liste aller aktiven Container-IDs
-
-# Initialisieren von Assoziativarrays für gemessene und berechnete Zeiten
-declare -A measured_times
-
-for id in "${container_ids[@]}"; do
-    container_name=$(docker inspect --format '{{.Name}}' "$id" | sed 's/^\/\+//')
-
-    if [[ "$container_name" == "p2p-containerlab-topology-lectureStudioServer" || \
-          "$container_name" == "p2p-containerlab-topology-trackerPeer" || \
-          "$container_name" == "p2p-containerlab-topology-cadvisor" || \
-          "$container_name" == "p2p-containerlab-topology-grafana" || \
-          "$container_name" == "p2p-containerlab-topology-prometheus" ]]; then
-        continue
-    fi
-    
-    container_logs=$(docker logs "$id")
-    
-    # Extrahieren der File Transfer Time aus den Logs
-    transfer_time_line=$(echo "$container_logs" | grep "File Transfer Time")
-    transfer_time=$(echo "$transfer_time_line" | grep -oP '(?<=File Transfer Time: )\d+')
-    
-    if [ ! -z "$transfer_time" ]; then
-        # Speichern der gemessenen Zeit im Assoziativarray mit dem vollständigen Container-Namen
-        measured_times["$container_name"]=$transfer_time
-    fi
-done
-
-#printf "\n--Error Rates--\n\n"
-# Iteration über die gemessenen Zeiten und Berechnung der Fehlerquote
-#for container_name in "${!measured_times[@]}"; do
-#    measured_time=${measured_times[$container_name]}
-#    calculated_time=${calculated_times[$container_name]}
-#    
-#    if [ -n "$calculated_time" ] && [ -n "$measured_time" ]; then
-#        error_rate=$(awk "BEGIN {printf \"%.2f\", (($measured_time - $calculated_time) / $calculated_time) * 100}")
-#        echo "$container_name: $error_rate%"
-#    else
-#        echo "Keine Daten für Container $container_name gefunden."
-#    fi
-#done
-
-min_error_rate=99999999  # Setzen Sie einen hohen Ausgangswert
+min_error_rate=99999999  
 max_error_rate=0
 total_error_rate=0
 count_error_rates=0
@@ -406,15 +368,18 @@ count_error_rates=0
 for container_name in "${!measured_times[@]}"; do
     measured_time=${measured_times[$container_name]}
     
-    # Überprüfen, ob der Containername im calculated_times Array existiert
     if [[ -n ${calculated_times[$container_name]+_} ]]; then
         calculated_time=${calculated_times[$container_name]}
         
         if [ -n "$calculated_time" ] && [ -n "$measured_time" ]; then
-            error_rate=$(echo "scale=2; (($measured_time - $calculated_time) / $calculated_time) * 100" | bc)
-            echo "$container_name Transferzeit-Fehlerquote: $error_rate%"
+            error_rate=$(echo "scale=4; (($measured_time - $calculated_time) / $calculated_time) * 100" | bc)
+            error_rate=$(printf "%.2f" "$error_rate") 
+            echo "Result for $container_name"
+            echo "Measured Time: $measured_time"
+            echo "Calculated Time: $calculated_time"
+            echo "Transfer Time Fehler Rate: $error_rate%"
+            echo ""
             
-            # Aktualisieren der min, max und Summe der Fehlerquoten
             if (( $(echo "$error_rate < $min_error_rate" | bc -l) )); then
                 min_error_rate=$error_rate
             fi
@@ -426,14 +391,13 @@ for container_name in "${!measured_times[@]}"; do
             total_error_rate=$(echo "scale=2; $total_error_rate + $error_rate" | bc)
             count_error_rates=$((count_error_rates + 1))
         else
-            echo "Keine Daten für Container $container_name gefunden."
+            echo "No data found for container $container_name."
         fi
     else
-        echo "Keine berechneten Daten für Container $container_name gefunden."
+        echo "No calculated data found for container $container_name."
     fi
 done
 
-# Berechnung der durchschnittlichen Fehlerquote
 avg_error_rate=0
 if [ "$count_error_rates" -gt 0 ]; then
     avg_error_rate=$(echo "scale=2; $total_error_rate / $count_error_rates" | bc)
