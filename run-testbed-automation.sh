@@ -5,63 +5,63 @@ printf "\nStarting Testbed.\n\n"
 printf "\nStep Started: Choosing test case and moving data file.\n\n"
 
 # Define arrays for the variable values
-declare -a HAS_SUPERPEER_VALUES=("false" "true")
-#declare -a NUMBER_OF_PEERS_VALUES=("5" "10" "20" "35" "50" "75")
-declare -a NUMBER_OF_PEERS_VALUES=("50" "75")
-declare -a CHOICE_OF_PDF_MB_VALUES=("1" "3" "5" "10" "15" "20" "30")
+declare -a has_superpeer_values=("false" "true")
+#declare -a has_superpeer_values=("5" "10" "20" "35" "50" "75")
+declare -a number_of_peers_values=("5" "75")
+declare -a choice_of_pdf_mb_values=("5" "10" "15" "20" "30")
 
 declare -A calculated_times
 declare -A measured_times
 
 # Iterate over each combination of variable values
-for HAS_SUPERPEER in "${HAS_SUPERPEER_VALUES[@]}"; do
-    for NUMBER_OF_PEERS_ARG in "${NUMBER_OF_PEERS_VALUES[@]}"; do
-        for CHOICE_OF_PDF_MB in "${CHOICE_OF_PDF_MB_VALUES[@]}"; do
-            echo "Info: Running test with HAS_SUPERPEER=$HAS_SUPERPEER, NUMBER_OF_PEERS_ARG=$NUMBER_OF_PEERS_ARG, CHOICE_OF_PDF_MB=$CHOICE_OF_PDF_MB"
+for has_superpeer in "${has_superpeer_values[@]}"; do
+    for number_of_peers in "${number_of_peers_values[@]}"; do
+        for choice_of_pdf_mb in "${choice_of_pdf_mb_values[@]}"; do
+            echo "Info: Running test with has_superpeer=$has_superpeer, number_of_peers=$number_of_peers, choice_of_pdf_mb=$choice_of_pdf_mb"
 
 # Base directory path where all project-related files are located
-BASISPFAD="$HOME/Desktop"
+BASE_PATH="$HOME/Desktop"
 
 # Paths to various components of the Java programs used in the testbed
-JAVA_PROGRAM_FOR_TESTBED_PATH="$BASISPFAD/master-thesis-ozcankaraca/java-program-for-testbed/"
-JAVA_PROGRAM_FOR_VALIDATION_PATH="$BASISPFAD/master-thesis-ozcankaraca/java-program-for-validation/"
-JAVA_PROGRAM_FOR_CONTAINER_PATH="$BASISPFAD/master-thesis-ozcankaraca/java-program-for-container/"
+JAVA_PROGRAM_FOR_TESTBED_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-testbed/"
+JAVA_PROGRAM_FOR_VALIDATION_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-validation/"
+JAVA_PROGRAM_FOR_CONTAINER_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-container/"
 
 # Path to the YAML file for containerlab topology configuration
-CONTAINERLAB_YML="$BASISPFAD/master-thesis-ozcankaraca/java-program-for-container/src/main/java/containerlab-topology.yml"
+CONTAINERLAB_YML="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-container/src/main/java/containerlab-topology.yml"
 
 # Paths for Docker images related to the testbed, tracker-peer, and monitoring tools
-IMAGE_TESTBED_PATH="$BASISPFAD/master-thesis-ozcankaraca/java-program-for-container/"
-IMAGE_TRACKER_PATH="$BASISPFAD/master-thesis-ozcankaraca/java-program-for-validation/src/main/java"
-IMAGE_ANALYSING_MONITORING_PATH="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/data-for-analysing-monitoring/"
+IMAGE_TESTBED_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-container/"
+IMAGE_TRACKER_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-validation/src/main/java"
+IMAGE_ANALYSING_MONITORING_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/data-for-analysing-monitoring/"
+
+PDF_FILES_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/PDF/"
+
+DESTINATION_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/"
+
+DELETE_FILE_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/mydocument.pdf"
 
 # Class names of various Java programs used in the testbed
-JAVA_PROGRAM_FOR_TESTBED_CLASS1="GeneratorOfNetworkTopology"
-JAVA_PROGRAM_FOR_TESTBED_CLASS2="ConnectionAnalysis"
-JAVA_PROGRAM_FOR_TESTBED_CLASS3="NetworkConfigParser"
-JAVA_PROGRAM_FOR_TESTBED_CLASS4="ConnectionDetails"
-JAVA_PROGRAM_FOR_TESTBED_CLASS5="YMLGenerator"
-JAVA_PROGRAM_FOR_TESTBED_CLASS6="OnlyFromLectureStudioServerToPeers"
+java_program_for_testbed_class1="GeneratorOfNetworkTopology"
+java_program_for_testbed_class2="ConnectionAnalysis"
+java_program_for_testbed_class3="NetworkConfigParser"
+java_program_for_testbed_class4="ConnectionDetails"
+java_program_for_testbed_class5="YMLGenerator"
+java_program_for_testbed_class6="OnlyFromLectureStudioServerToPeers"
 
 # Class names for the Java programs used in validation
-JAVA_PROGRAM_FOR_VALIDATION_CLASS1="ConnectionQuality"
-JAVA_PROGRAM_FOR_VALIDATION_CLASS2="CompareFiles"
+java_program_for_validation_class1="ConnectionQuality"
+java_program_for_validation_class2="CompareFiles"
 
-base_path="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/PDF/"
+rm -f "$DELETE_FILE_PATH"
 
-destination="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/"
+file_name="${choice_of_pdf_mb}MB.pdf"
+FULL_PATH="${PDF_FILES_PATH}/${file_name}"
 
-delete_file="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/mydocument.pdf"
-
-rm -f "$delete_file"
-
-file_name="${CHOICE_OF_PDF_MB}MB.pdf"
-full_path_to_file="${base_path}/${file_name}"
-
-if [ -f "$full_path_to_file" ]; then
+if [ -f "$FULL_PATH" ]; then
   
-    cp "$full_path_to_file" "$destination/mydocument.pdf"
-    printf "\nSuccess: File '$file_name' was copied as 'mydocument.pdf' to '$destination'.\n"
+    cp "$FULL_PATH" "$DESTINATION_PATH/mydocument.pdf"
+    printf "\nSuccess: File '$file_name' was copied as 'mydocument.pdf' to '$DESTINATION_PATH'.\n"
 else
     printf "\nUnsucess: File '$file_name' was not found.\n"
 fi
@@ -76,23 +76,23 @@ testbed_and_containerlab() {
     cd "$JAVA_PROGRAM_FOR_TESTBED_PATH"
     
     # Executing specific Java classes based on the configuration of super-peers 
-    if [ "$HAS_SUPERPEER" = "false" ]; then
-        echo "Info: Executing OnlyFromServerToPeers class as HAS_SUPERPEER is set to false."
-        mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS6" -Dexec.args="$NUMBER_OF_PEERS_ARG"
+    if [ "$has_superpeer" = "false" ]; then
+        echo "Info: Executing OnlyFromLectureStudioServerToPeers class as has_superpeer is set to false."
+        mvn -q exec:java -Dexec.mainClass="$java_program_for_testbed_class6" -Dexec.args="$number_of_peers"
     fi
     
     # Additional Java classes executed as part of the testbed setup process
-    #mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS1" -Dexec.args="$NUMBER_OF_PEERS_ARG"
+    #mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS1" -Dexec.args="$number_of_peers"
     #sleep 5
     
-    mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS2" -Dexec.args="$NUMBER_OF_PEERS_ARG"
+    mvn -q exec:java -Dexec.mainClass="$java_program_for_testbed_class2" -Dexec.args="$number_of_peers"
     sleep 5
     
-    mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS3" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER"
+    mvn -q exec:java -Dexec.mainClass="$java_program_for_testbed_class3" -Dexec.args="$number_of_peers $has_superpeer"
     sleep 5
     
-java_output_file=$(mktemp)
-mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS4" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER $CHOICE_OF_PDF_MB" | tee "$java_output_file"
+JAVA_OUTPUT_FILE_PATH=$(mktemp)
+mvn -q exec:java -Dexec.mainClass="$java_program_for_testbed_class4" -Dexec.args="$number_of_peers $has_superpeer $choice_of_pdf_mb" | tee "$JAVA_OUTPUT_FILE_PATH"
 
 
 while IFS= read -r line; do
@@ -101,9 +101,9 @@ while IFS= read -r line; do
         time_ms="${BASH_REMATCH[2]}"
         calculated_times["p2p-containerlab-topology-$container_id"]=$time_ms
     fi
-done < "$java_output_file"
+done < "$JAVA_OUTPUT_FILE_PATH"
 
-rm "$java_output_file"
+rm "$JAVA_OUTPUT_FILE_PATH"
 
 printf "\n--Calculated Transfer Times for Container--\n"
 
@@ -113,7 +113,7 @@ done
 
 printf "\nStep Done: Combining connection details is done.\n"
      
-    mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS5" -Dexec.args="$NUMBER_OF_PEERS_ARG $HAS_SUPERPEER"
+    mvn -q exec:java -Dexec.mainClass="$java_program_for_testbed_class5" -Dexec.args="$number_of_peers $has_superpeer"
     sleep 5
 
     printf "Step Started: Generating Docker image.\n"
@@ -177,7 +177,7 @@ run_validation() {
                 min_bandwidth_error_rate=$(echo "$line" | awk '{print $5}')
                 ;;
         esac
-    done < <(mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_VALIDATION_CLASS1" -Dexec.args="$NUMBER_OF_PEERS_ARG")
+    done < <(mvn -q exec:java -Dexec.mainClass="$java_program_for_validation_class1" -Dexec.args="$number_of_peers")
 }
 
 # Executing the testbed setup and validation process
@@ -476,7 +476,7 @@ printf "\nStep Done: Checking Container logs is done.\n"
 #    if [[ "$line" == "Info: All containers have the same file based on the hash values." ]]; then
 #        all_containers_have_file=true
 #    fi
-#done < <(mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_VALIDATION_CLASS2" -Dexec.args="$NUMBER_OF_PEERS_ARG")
+#done < <(mvn -q exec:java -Dexec.mainClass="$java_program_for_validation_class2" -Dexec.args="$NUMBER_OF_PEERS_ARG")
 #sleep 5
 
 printf "\nStep Started: Cleaning up the testbed.\n"
@@ -526,18 +526,18 @@ min_bandwidth_error_rate=${min_bandwidth_error_rate//,/\.}
 avg_bandwidth_error_rate=${avg_bandwidth_error_rate//,/\.}
 
 # Path for the file storing the test ID counter
-TEST_ID_FILE="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/test_id_counter5.txt"
+TEST_ID_FILE_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/results/test_id_counter5.txt"
 
 # Incrementing the test ID for each run, or starting at 1 if the file doesn't exist
 if [ -f "$TEST_ID_FILE" ]; then
-    test_id=$(<"$TEST_ID_FILE")
+    test_id=$(<"$TEST_ID_FILE_PATH")
     test_id=$((test_id+1)) 
 else
     test_id=1  
 fi
 
 # Updating the test ID counter file
-echo "$test_id" > "$TEST_ID_FILE"
+echo "$test_id" > "$TEST_ID_FILE_PATH"
 
 # Defining function to format time values
 format_time() {
@@ -580,8 +580,8 @@ total_duration_sec=$(calculate_and_format_time "$total_duration")
 printf "\nAll Results:\n"
 
 echo "TestID: Test$test_id"
-echo "Number of Peers: $(($NUMBER_OF_PEERS_ARG + 1))"
-echo "With Super-Peers: $HAS_SUPERPEER"
+echo "Number of Peers: $(($number_of_peers + 1))"
+echo "With Super-Peers: $has_superpeer"
 echo "All containers have the same PDF file: $all_containers_have_file"
 echo "Total Received Bytes: $total_received_bytes Bytes"
 
@@ -616,7 +616,7 @@ printf "\nStep Done: Calculating all results is done.\n"
 printf "\nStep Started: Writing all results into CSV file.\n"
 
 # Path for the CSV file to store the results
-CSV_PATH="$BASISPFAD/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed5.csv"
+CSV_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed5.csv"
 
 # Create a CSV file with headers if it doesn't already exist
 if [ ! -f "$CSV_PATH" ]; then
@@ -624,7 +624,7 @@ if [ ! -f "$CSV_PATH" ]; then
 fi
 
 # Append the current test results to the CSV file along with the new fields for error rates and total duration
-echo "Test$test_id;$(($NUMBER_OF_PEERS_ARG + 1));$HAS_SUPERPEER;$total_duration_sec;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate;$min_error_rate;$avg_error_rate;$max_error_rate" >> "$CSV_PATH"
+echo "Test$test_id;$(($number_of_peers + 1));$has_superpeer;$total_duration_sec;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate;$min_error_rate;$avg_error_rate;$max_error_rate" >> "$CSV_PATH"
 
 
 printf "\nStep Done: Writing all results into CSV file is done.\n"
