@@ -67,7 +67,7 @@ public class YMLGenerator {
         }
 
         // Print the beginning of the YML file generation step.
-        System.out.println("\nStep Started: Creating YML file for testbed.");
+        System.out.println("\nStep Started: Creating YML file for testbed.\n");
 
         try {
 

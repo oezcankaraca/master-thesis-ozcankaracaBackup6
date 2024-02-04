@@ -1,18 +1,30 @@
 #!/bin/bash
 
-printf "\nStep Started: Choosing test case and moving data file.\n\n"
-
+# Read values from run-testbed.sh
 IFS=' ' read -r -a has_superpeer_values <<< "$has_superpeer_values"
 IFS=' ' read -r -a number_of_peers_values <<< "$number_of_peers_values"
 IFS=' ' read -r -a choice_of_pdf_mb_values <<< "$choice_of_pdf_mb_values"
-
 IFS=' ' read -r -a BASE_PATH <<< "$BASE_PATH"
 
-# Iterate over each combination of variable values
-for has_superpeer in "${has_superpeer_values[@]}"; do
-    for number_of_peers in "${number_of_peers_values[@]}"; do
-        for choice_of_pdf_mb in "${choice_of_pdf_mb_values[@]}"; do
-            echo "Info: Running test with has_superpeer=$has_superpeer, number_of_peers=$number_of_peers, choice_of_pdf_mb=$choice_of_pdf_mb"
+# Class names of various Java programs used in the testbed
+java_program_for_testbed_class1="GeneratorOfNetworkTopology"
+java_program_for_testbed_class2="ConnectionAnalysis"
+java_program_for_testbed_class3="NetworkConfigParser"
+java_program_for_testbed_class4="ConnectionDetails"
+java_program_for_testbed_class5="YMLGenerator"
+java_program_for_testbed_class6="OnlyFromLectureStudioServerToPeers"
+
+# Class names for the Java programs used in validation
+java_program_for_validation_class1="ConnectionQuality"
+java_program_for_validation_class2="CompareFiles"
+
+# Variables for calculating and measuring data transfer time
+declare -A calculated_times
+declare -A measured_times
+
+# Clean for Docker images
+enable_cleanup_for_image="false"
+run_generator_network_topology="false"
 
 # Paths to various components of the Java programs used in the testbed
 JAVA_PROGRAM_FOR_TESTBED_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-testbed/"
@@ -27,27 +39,20 @@ IMAGE_TESTBED_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-contai
 IMAGE_TRACKER_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-validation/src/main/java"
 IMAGE_ANALYSING_MONITORING_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/data-for-analysing-monitoring/"
 
+# Path to the PDF files for data transfer
 PDF_FILES_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/PDF/"
-
 DESTINATION_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/"
-
 DELETE_FILE_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/mydocument.pdf"
 
-# Class names of various Java programs used in the testbed
-java_program_for_testbed_class1="GeneratorOfNetworkTopology"
-java_program_for_testbed_class2="ConnectionAnalysis"
-java_program_for_testbed_class3="NetworkConfigParser"
-java_program_for_testbed_class4="ConnectionDetails"
-java_program_for_testbed_class5="YMLGenerator"
-java_program_for_testbed_class6="OnlyFromLectureStudioServerToPeers"
+# Iterate over each combination of variable values
+for has_superpeer in "${has_superpeer_values[@]}"; do
+    for number_of_peers in "${number_of_peers_values[@]}"; do
+        for choice_of_pdf_mb in "${choice_of_pdf_mb_values[@]}"; do
+            echo "Info: Running test with has_superpeer=$has_superpeer, number_of_peers=$number_of_peers, choice_of_pdf_mb=$choice_of_pdf_mb"
 
-# Class names for the Java programs used in validation
-java_program_for_validation_class1="ConnectionQuality"
-java_program_for_validation_class2="CompareFiles"
+printf "\nStep Started: Choosing test case and moving data file.\n"
 
-declare -A calculated_times
-declare -A measured_times
-
+# Delete the last pdf file for testing and give information about the pdf file 
 rm -f "$DELETE_FILE_PATH"
 
 file_name="${choice_of_pdf_mb}MB.pdf"
@@ -61,9 +66,8 @@ else
     printf "\nUnsucess: File '$file_name' was not found.\n"
 fi
 
-printf "\nStep Done: Choosing test case and moving data file are done.\n\n"
-
 sleep 30
+printf "\nStep Done: Choosing test case and moving data file are done.\n\n"
 
 testbed_and_containerlab() {
 
@@ -76,9 +80,10 @@ testbed_and_containerlab() {
         mvn -q exec:java -Dexec.mainClass="$java_program_for_testbed_class6" -Dexec.args="$number_of_peers"
     fi
     
-    # Additional Java classes executed as part of the testbed setup process
-    #mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS1" -Dexec.args="$number_of_peers"
-    #sleep 5
+    if [ "$run_generator_network_topology" == "true" ]; then
+        mvn -q exec:java -Dexec.mainClass="$JAVA_PROGRAM_FOR_TESTBED_CLASS1" -Dexec.args="$number_of_peers"
+        sleep 5
+    fi
     
     mvn -q exec:java -Dexec.mainClass="$java_program_for_testbed_class2" -Dexec.args="$number_of_peers"
     sleep 5
@@ -91,7 +96,7 @@ mvn -q exec:java -Dexec.mainClass="$java_program_for_testbed_class4" -Dexec.args
 
 
 while IFS= read -r line; do
-    if [[ "$line" =~ ([0-9]+):[[:space:]]+([0-9]+)[[:space:]]milliseconds ]]; then
+    if [[ "$line" =~ ([0-9]+):[[:space:]]+([0-9]+)[[:space:]]ms ]]; then
         container_id="${BASH_REMATCH[1]}"
         time_ms="${BASH_REMATCH[2]}"
         calculated_times["p2p-containerlab-topology-$container_id"]=$time_ms
@@ -407,9 +412,7 @@ if [ "$count_error_rates" -gt 0 ]; then
     avg_error_rate=$(printf "%.2f" "$avg_error_rate")
 fi
 
-
 echo "-----------------------------------------------------------------------------------------------------------------------------------------------"
-echo ""
 
 if [[ -n "$trackerPeerId" ]]; then
     printf "\n--Logs for Container p2p-containerlab-topology-trackerPeer:--\n\n"
@@ -484,21 +487,23 @@ sudo containerlab destroy -t "$CONTAINERLAB_YML" --cleanup
 printf "\nInfo: Waiting for all Containers to stop.\n"
 sleep 5
 
-# Checking if any containers using the 'image-testbed' image are still running
-#if [ -z "$(docker ps -q --filter ancestor=image-testbed)" ]; then
-#    printf "Info: All Containers have stopped.\n"
-#    echo ""
-#    echo "Deleting Docker image:"
-#    echo ""
-    #docker image rm image-testbed
-    #docker image rm image-tracker
-    #docker image rm image-cadvisor
-    #docker image rm image-grafana
-    #docker image rm image-prometheus
-#    printf "\nInfo: Docker image successfully deleted."
-#else
-#    echo "Error: There are still running Containers. Cannot delete Docker image."
-#fi
+if [ "$enable_cleanup_for_image" == "true" ]; then
+    # Checking if any containers using the 'image-testbed' image are still running
+    if [ -z "$(docker ps -q --filter ancestor=image-testbed)" ]; then
+        printf "Info: All Containers have stopped.\n"
+        echo ""
+        echo "Deleting Docker image:"
+        echo ""
+        docker image rm image-testbed
+        docker image rm image-tracker
+        docker image rm image-cadvisor
+        docker image rm image-grafana
+        docker image rm image-prometheus
+        printf "\nInfo: Docker image successfully deleted."
+    else
+        echo "Error: There are still running Containers. Cannot delete Docker image."
+    fi
+fi
 
 printf "\nStep Done: Cleaning up the Testbed is done.\n"
 
@@ -621,8 +626,7 @@ fi
 # Append the current test results to the CSV file along with the new fields for error rates and total duration
 echo "Test$test_id;$(($number_of_peers + 1));$has_superpeer;$total_duration_sec;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate;$min_error_rate;$avg_error_rate;$max_error_rate" >> "$CSV_PATH"
 
-
-printf "\nStep Done: Writing all results into CSV file is done.\n"
+printf "\nStep Done: Writing all results into CSV file is done.\n\n"
 
         done
     done

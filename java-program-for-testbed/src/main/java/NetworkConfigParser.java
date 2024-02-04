@@ -246,6 +246,6 @@ public class NetworkConfigParser {
         System.out.println(
                 "\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-        System.out.println("\nStep: Integrating P2P algorithm is done.\n");
+        System.out.println("\nStep Done: Integrating P2P algorithm is done.\n");
     }
 }

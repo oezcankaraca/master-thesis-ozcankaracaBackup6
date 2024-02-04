@@ -140,7 +140,7 @@ public class ConnectionDetails {
                 + numberOfPeers + ".json";
         String pathToJsonInput = basePath + "/data-for-testbed/inputs/input-data-" + numberOfPeers + ".json";
 
-        System.out.println("\nStep Started: Combining connection details\n");
+        System.out.println("Step Started: Combining connection details\n");
         System.out.println("Info: Starting connection details from output-data and input data");
 
         Set<String> peerIds = new HashSet<>();
@@ -202,7 +202,7 @@ public class ConnectionDetails {
                 double fileSizeKilobytes = fileSizeBytes / 1000.0;
                 // Calculation of the time in milliseconds as an integer
                 int timeMilliseconds = (int) ((fileSizeKilobytes / speedKbytesPerSecond) * 1000);
-                System.out.println(connection + ": " + timeMilliseconds + " milliseconds");
+                System.out.println(connection + ": " + timeMilliseconds + " ms");
             } else {
                 System.out.println(connection + ": Bandwidth or file size data is missing.");
             }
