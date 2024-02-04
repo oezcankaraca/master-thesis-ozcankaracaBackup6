@@ -22,23 +22,15 @@ import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.core.DockerClientBuilder;
 
 /**
- * The ConnectionQuality class is designed for assessing network performance
- * characteristics
- * within a containerized environment. It facilitates the execution of network
- * diagnostic tests,
- * such as latency and bandwidth measurements, between different Docker
- * containers. The class
- * integrates functionalities for parsing YAML files to extract network topology
- * and connection
- * details, executing network tests using tools like ping and iperf3, and
- * analyzing the test results.
+ * The ConnectionQuality class is designed for assessing network performance characteristics
+ * within a containerized environment. It facilitates the execution of network tests,
+ * such as latency and bandwidth measurements, between different Docker containers.
+ * The class integrates functionalities for parsing YAML files to extract network topology and
+ * connection details, executing network tests using tools like ping and iperf3, and analyzing the test results.
  *
- * The class primarily works with Docker containers, identifying them by name
- * and executing
- * commands within them to measure network performance metrics. Additionally, it
- * parses JSON data
- * to compare the expected network parameters with the measured ones, calculates
- * error percentages,
+ * The class primarily works with Docker containers, identifying them by name and executing
+ * commands within them to measure network performance metrics. Additionally, it parses JSON data
+ * to compare the expected network parameters with the measured ones, calculates error percentages,
  * and determines if the network's performance is within acceptable limits.
  *
  * @author Özcan Karaca
@@ -68,8 +60,7 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
     /**
      * Main method to initiate network validation.
      * 
-     * @param args Command line arguments, expects number of peers as an optional
-     *             argument.
+     * @param args Command line arguments, expects number of peers as an optional argument.
      */
     public static void main(String[] args) throws InterruptedException {
 
@@ -237,52 +228,62 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
     }
 
     /**
-     * Performs a single connection test including ping and iperf3.
+     * Performs a connection test between two peers using ping for latency measurement
+     * and iperf3 for bandwidth measurement. The method retries up to three times if
+     * the error thresholds for bandwidth or latency are not met.
      * 
      * @param info ConnectionInfo object containing details for the test.
      * @return True if the test is successful, false otherwise.
      * @throws InterruptedException If thread interruption occurs during the tests.
      */
     private boolean performConnectionTest(ConnectionInfo info) throws InterruptedException {
+        // Extract peer and IP information from the ConnectionInfo object.
         String targetPeerNumber = info.getTargetPeer();
         String targetPeer = findContainerNameByNumber(targetPeerNumber);
         String sourcePeerNumber = info.getSourcePeer();
         String sourcePeer = findContainerNameByNumber(sourcePeerNumber);
         String targetPeerIp = info.getTargetPeerIp();
-    
+
         int attempts = 0;
         boolean testSuccessful = false;
-    
+
+        // Loop up to three attempts or until the test is successful.
         while (attempts < 3 && !testSuccessful) {
-          
+
+            // Perform ping and iperf tests.
             String pingResult = executeCommand(sourcePeer, "ping -c 4 " + targetPeerIp);
             executeCommandInBackground(targetPeer, "iperf3 -s");
-            Thread.sleep(5000); // Wartezeit für den Serverstart
+            Thread.sleep(5000); // Wait for the server to be ready.
             String iperfResult = executeCommand(sourcePeer, "iperf3 -c " + targetPeerIp);
-    
+
+            // Extract measured values from the test results.
             double measuredBandwidth = extractAndPrintIperfBandwidth(iperfResult);
             double measuredLatency = extractAndPrintPingLatency(pingResult);
-    
+
+            // Load applied (expected) values from a configuration file.
             String CONNECTION_DETAILS_FILE_DIR = basePath + "/data-for-testbed/connection-details/connection-details-"
                     + numberOfPeers + ".json";
             Object[] appliedValues = extractData(sourcePeerNumber, targetPeerNumber, CONNECTION_DETAILS_FILE_DIR);
-    
+
             int appliedBandwidth = (int) ((Integer) appliedValues[0]).doubleValue();
             double appliedLatency = Double.parseDouble((String) appliedValues[1]);
             double appliedLoss = Double.parseDouble((String) appliedValues[2]);
-    
+
+            // Analyze results and print a comparison.
             analyzeAndPrintResults(measuredBandwidth, appliedBandwidth, measuredLatency, appliedLatency, appliedLoss,
                     sourcePeer, targetPeer);
-    
+
+            // Calculate error percentages.
             double bandwidthError = calculateErrorPercentage(measuredBandwidth, appliedBandwidth);
             double latencyError = calculateErrorPercentage(measuredLatency, appliedLatency);
-    
+
+            // Check if the test is successful based on error thresholds.
             if (bandwidthError <= 5 && latencyError <= determineAcceptableLatencyErrorRate(measuredBandwidth)) {
                 testSuccessful = true;
-    
+
                 latencyErrorRates.add(latencyError);
                 bandwidthErrorRates.add(bandwidthError);
-                
+
             } else {
                 attempts++;
                 if (attempts < 3) {
@@ -290,7 +291,8 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
                 }
             }
         }
-    
+
+        // Final decision based on test success or failure after all attempts.
         if (testSuccessful) {
             System.out.println("\nInfo: Test from " + sourcePeer + " to " + targetPeer + " successful after "
                     + (attempts + 1) + " attempts.");
@@ -299,9 +301,17 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
             System.out.println("\nError: Test from " + sourcePeer + " to " + targetPeer + " failed after 3 attempts.");
             return false;
         }
-    }    
+    }
 
+    /**
+     * Determines the acceptable latency error rate based on the measured bandwidth.
+     * Higher bandwidths allow for tighter error margins.
+     * 
+     * @param measuredBandwidth The bandwidth measured during the connection test.
+     * @return The acceptable latency error rate percentage.
+     */
     private double determineAcceptableLatencyErrorRate(double measuredBandwidth) {
+        // Define acceptable latency error rates based on different bandwidth ranges.
         if (measuredBandwidth < 100) {
             return 35;
         } else if (measuredBandwidth >= 100 && measuredBandwidth <= 200) {
@@ -313,47 +323,72 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
         } else if (measuredBandwidth >= 1000 && measuredBandwidth <= 3000) {
             return 15;
         } else {
-            return 10;
+            return 10; // Tightest error margin for the highest bandwidths.
         }
     }
 
+    /**
+     * Calculates the average of a list of double values.
+     * Returns 0.0 if the list is empty.
+     *
+     * @param rates The list of double values.
+     * @return The average of the values in the list.
+     */
     private static double calculateAverage(List<Double> rates) {
         if (rates.isEmpty()) {
-            return 0.0;
+            return 0.0; // Return default value if list is empty
         }
         double sum = 0.0;
         for (Double rate : rates) {
-            sum += rate;
+            sum += rate; // Sum up all the rates
         }
-        return sum / rates.size();
+        return sum / rates.size(); // Calculate average
     }
 
+    /**
+     * Calculates the maximum value in a list of double values.
+     * Returns 0.0 if the list is empty.
+     *
+     * @param rates The list of double values.
+     * @return The maximum value in the list.
+     */
     private static double calculateMax(List<Double> rates) {
         if (rates.isEmpty()) {
-            return 0.0;
+            return 0.0; // Return default value if list is empty
         }
-        double max = rates.get(0);
+        double max = rates.get(0); // Initialize max with the first value
         for (Double rate : rates) {
             if (rate > max) {
-                max = rate;
+                max = rate; // Update max if current rate is greater
             }
         }
-        return max;
+        return max; // Return the max value found
     }
 
+    /**
+     * Calculates the minimum value in a list of double values.
+     * Returns 0.0 if the list is empty.
+     *
+     * @param rates The list of double values.
+     * @return The minimum value in the list.
+     */
     private static double calculateMin(List<Double> rates) {
         if (rates.isEmpty()) {
-            return 0.0;
+            return 0.0; // Return default value if list is empty
         }
-        double min = rates.get(0);
+        double min = rates.get(0); // Initialize min with the first value
         for (Double rate : rates) {
             if (rate < min) {
-                min = rate;
+                min = rate; // Update min if current rate is lower
             }
         }
-        return min;
+        return min; // Return the min value found
     }
 
+    /**
+     * Displays the final results of latency and bandwidth error rates,
+     * including the minimum, average, and maximum error rates calculated from the provided lists.
+     */
     private static void displayFinalResults() {
         System.out.printf("**Final Results for Latency and Bandwidth Error Rates**%n");
         System.out.printf("Min Latency Error Rate: %.2f%%%n", calculateMin(latencyErrorRates));
@@ -362,7 +397,7 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
         System.out.printf("Min Bandwidth Error Rate: %.2f%%%n", calculateMin(bandwidthErrorRates));
         System.out.printf("Average Bandwidth Error Rate: %.2f%%%n", calculateAverage(bandwidthErrorRates));
         System.out.printf("Max Bandwidth Error Rate: %.2f%%%n", calculateMax(bandwidthErrorRates));
-    }    
+    }
 
     /**
      * Extracts and prints the average latency from a ping command output.
@@ -400,6 +435,7 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
                 for (int i = 0; i < parts.length; i++) {
                     if ("Gbits/sec".equals(parts[i]) || "Mbits/sec".equals(parts[i]) || "Kbits/sec".equals(parts[i])) {
                         bandwidthAsDouble = Double.parseDouble(parts[i - 1]);
+                        
                         // Convert bandwidth to Kbits/sec
                         if ("Gbits/sec".equals(parts[i])) {
                             bandwidthAsDouble *= 1000000;
@@ -411,7 +447,7 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
                 }
             }
         }
-        
+
         int bandwidth = (int) bandwidthAsDouble;
 
         return bandwidth;
@@ -426,15 +462,19 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
      * @return An array of Objects containing extracted data.
      */
     public Object[] extractData(String sourceName, String targetName, String filePath) {
+        // Initialize an array to hold bandwidth, latency, and loss values
         Object[] appliedValues = new Object[3];
 
         try (FileInputStream fis = new FileInputStream(new File(filePath))) {
             String data = new String(fis.readAllBytes(), StandardCharsets.UTF_8);
-            JSONArray jsonArray = new JSONArray(data);
+            JSONArray jsonArray = new JSONArray(data); // Converts the String into a JSONArray
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
+                JSONObject obj = jsonArray.getJSONObject(i); // Retrieves the JSONObject at position i
+                
+                // Checks if sourceName and targetName match the provided parameters
                 if (obj.getString("sourceName").equals(sourceName) && obj.getString("targetName").equals(targetName)) {
+                    // Stores bandwidth, latency, and loss values in the result array
                     appliedValues[0] = obj.getInt("bandwidth");
                     appliedValues[1] = obj.getString("latency");
                     appliedValues[2] = obj.getString("loss");
@@ -442,14 +482,15 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
                     return appliedValues;
                 }
             }
-
+            
+            // Message if no data was found for the specified sourceName and targetName
             System.out.println("Error: No data found for the specified sourceName and targetName.");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error: Error reading the JSON file.");
         }
 
-        return appliedValues;
+        return appliedValues; // Returns the array, even if no specific data was found
     }
 
     /**
@@ -462,45 +503,50 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
     private String executeCommand(String containerName, String command) {
         final StringBuilder output = new StringBuilder();
         try {
+            // Wraps the command in a shell call
             String[] commandWithShell = { "/bin/sh", "-c", command };
+            // Creates a command execution request for the specified container
             ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(containerName)
-                    .withAttachStdout(true)
-                    .withAttachStderr(true)
-                    .withCmd(commandWithShell)
+                    .withAttachStdout(true) // Attach to stdout to capture command output
+                    .withAttachStderr(true) // Also attach stderr to capture any errors
+                    .withCmd(commandWithShell) // Command to execute
                     .exec();
 
+            // Starts the command execution and processes the output asynchronously
             dockerClient.execStartCmd(execCreateCmdResponse.getId())
                     .exec(new ResultCallback.Adapter<Frame>() {
                         @Override
                         public void onNext(Frame frame) {
-                            String payload = new String(frame.getPayload());
-                            output.append(payload);
+                            String payload = new String(frame.getPayload()); // Convert frame payload to string
+                            output.append(payload); // Append the output to the StringBuilder
                         }
                     })
-                    .awaitCompletion(30, TimeUnit.SECONDS);
+                    .awaitCompletion(30, TimeUnit.SECONDS); // Wait for command completion or timeout
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error: Error while executing command in " + containerName);
         }
-        return output.toString();
+        return output.toString(); // Return the accumulated output as a string
     }
 
     /**
-     * Executes a command in a Docker container without waiting for the output (runs
-     * in background).
+     * Executes a command in a Docker container without waiting for the output (runs in background).
      * 
      * @param containerName The name of the Docker container.
      * @param command       The command to be executed inside the container.
      */
     private void executeCommandInBackground(String containerName, String command) {
         try {
+            // Wraps the command in a shell call for execution
             String[] commandWithShell = { "/bin/sh", "-c", command };
+            // Creates a command execution request for the specified container
             ExecCreateCmdResponse execCreateCmdResponse = dockerClient.execCreateCmd(containerName)
-                    .withAttachStdout(false)
-                    .withAttachStderr(true)
-                    .withCmd(commandWithShell)
+                    .withAttachStdout(false) // No need to attach stdout for background execution
+                    .withAttachStderr(true) // Attach stderr to capture any errors
+                    .withCmd(commandWithShell) // Command to execute
                     .exec();
 
+            // Starts the command execution without waiting for completion
             dockerClient.execStartCmd(execCreateCmdResponse.getId()).start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -509,8 +555,7 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
     }
 
     /**
-     * Calculates the error percentage between a measured value and an applied
-     * value.
+     * Calculates the error percentage between a measured value and an applied value.
      * 
      * @param measuredValue The measured value from the test.
      * @param appliedValue  The expected or applied value.
@@ -529,16 +574,20 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
      * @param appliedLatency    The applied latency.
      * @param sourcePeer        The source peer of the test.
      * @param targetPeer        The target peer of the test.
-     * @throws InterruptedException If thread interruption occurs during the
-     *                              process.
+     * @throws InterruptedException If thread interruption occurs during the process.
      */
     private void analyzeAndPrintResults(double measuredBandwidth, int appliedBandwidth, double measuredLatency,
             double appliedLatency, double appliedLoss, String sourcePeer, String targetPeer)
             throws InterruptedException {
+        
+        // Calculate error percentages for bandwidth and latency against applied (expected) values.
         double bandwidthError = calculateErrorPercentage(measuredBandwidth, appliedBandwidth);
         double latencyError = calculateErrorPercentage(measuredLatency, appliedLatency);
+        
+        // Determine the acceptable latency error rate based on measured bandwidth.
         double acceptableLatencyErrorRate;
 
+        // Set acceptable error rates based on bandwidth ranges.
         if (measuredBandwidth < 100) {
             acceptableLatencyErrorRate = 35;
         } else if (measuredBandwidth >= 100 && measuredBandwidth <= 200) {
@@ -553,6 +602,7 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
             acceptableLatencyErrorRate = 10;
         }
 
+        // Print measurement results.
         System.out.println("\n**Results of the Measurements:**");
         System.out.printf("Measured Bandwidth: %.0f Kbits/sec%n", measuredBandwidth);
         System.out.printf(Locale.US, "Measured Latency: %.2f ms%n", measuredLatency);
@@ -560,10 +610,12 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
         System.out.println("Applied Latency: " + appliedLatency + " ms");
         System.out.println("Applied Packet Loss: " + appliedLoss + " %");
 
+        // Print error rates and compare them against acceptable thresholds.
         System.out.println("\n**Results of the Error Rate:**");
         System.out.printf("Error Rate for Bandwidth: %.2f%%%n", bandwidthError);
         System.out.printf("Error Rate for Latency: %.2f%%%n", latencyError);
 
+        // Evaluate if the error rates are within acceptable limits and print the conclusion.
         if (bandwidthError > 5 || latencyError > acceptableLatencyErrorRate) {
             System.out.println(
                     "\nError: Error rate exceeds " + acceptableLatencyErrorRate + "% for Latency or 5% for Bandwidth.");
@@ -574,18 +626,17 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
             System.out.println("Info: The test from " + sourcePeer + " to " + targetPeer + " is successful.");
         }
 
+        // Pause to ensure the message is read before proceeding
         Thread.sleep(2000);
     }
 
     /**
      * Runs a series of network tests using connection information provided.
      * 
-     * @param connectionInfos A list of ConnectionInfo objects representing the
-     *                        connections to be tested.
+     * @param connectionInfos A list of ConnectionInfo objects representing the connections to be tested.
      * @throws InterruptedException If thread interruption occurs during the tests.
      */
     public void runTests(List<ConnectionInfo> connectionInfos) throws InterruptedException {
         iperfAndPingTests(connectionInfos);
     }
-
 }

@@ -12,17 +12,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * The CompareFiles class is designed to verify the integrity of files across
- * multiple Docker containers.
- * It achieves this by comparing the SHA-256 hash values of files located in
- * different containers against
- * a reference hash value of an original file. This class is useful in scenarios
- * where consistency and
- * data integrity of files distributed across multiple containers need to be
- * ensured.
+ * The CompareFiles class is designed to verify the integrity of files across multiple Docker containers.
+ * It achieves this by comparing the SHA-256 hash values of files located in different containers against
+ * a reference hash value of an original file. This class is useful in scenarios where consistency and
+ * data integrity of files distributed across multiple containers need to be ensured.
  *
  * @author Özcan Karaca
  */
+
 public class CompareFiles {
 
     // Static initializer block for configuring logging settings.
@@ -36,19 +33,16 @@ public class CompareFiles {
     private static DockerClient dockerClient;
 
     /*
-     * The main method initializes the process by defining container names, file
-     * paths,
-     * and calculating the hash of an original file. It then iterates through each
-     * specified container,
-     * checking if the files exist and comparing their hash values against the
-     * original file's hash.
-     * This provides detailed output about the hash comparison results, including
-     * whether the hashes match or not.
+     * The main method initializes the process by defining container names, file paths,
+     * and calculating the hash of an original file. It then iterates through each specified container,
+     * checking if the files exist and comparing their hash values against the  original file's hash.
+     * This provides detailed output about the hash comparison results, 
+     * including whether the hashes match or not.
      */
 
     public static void main(String[] args) {
 
-        System.out.println("\n**11.Step: COMPARES HASH VALUES**\n");
+        System.out.println("\nStep Started: Comparing hash values.\n");
 
         // Parsing command line arguments to set the number of peers
         if (args.length > 0) {
@@ -109,7 +103,7 @@ public class CompareFiles {
             e.printStackTrace();
         }
 
-        System.out.println("\n**11.STEP IS DONE.**\n");
+        System.out.println("\nStep Done: Comparing hash values is done.\n");
     }
 
     /**
@@ -125,11 +119,9 @@ public class CompareFiles {
     }
 
     /**
-     * Checks and compares the hash of files within a container against an original
-     * hash.
+     * Checks and compares the hash of files within a container against an original hash.
      * Iterates through file paths within the container, checks if each file exists,
-     * then compares its hash with the original hash, stopping after finding the
-     * first existing file.
+     * then compares its hash with the original hash, stopping after finding the first existing file.
      *
      * @param containerName  The name of the container where the files are located.
      * @param containerPaths An array of paths to the files within the container.
@@ -165,9 +157,9 @@ public class CompareFiles {
 
                 // Compare the container file hash with the original file hash
                 if (originalHash.equals(containerHash)) {
-                    System.out.println("Info: The hash values match for original file: " + containerPath + "\n");
+                    System.out.println("Success: The hash values match for original file: " + containerPath + "\n");
                 } else {
-                    System.out.println("Info: Hash values do not match for: " + containerPath + "\n");
+                    System.out.println("Unsuccess: Hash values do not match for: " + containerPath + "\n");
                     containerHashMatches = false;
                 }
                 // Stop after finding the first file that exists
@@ -188,8 +180,7 @@ public class CompareFiles {
 
     /**
      * Checks if a file exists within a Docker container.
-     * Executes a command in the Docker container to check if a specified file path
-     * exists.
+     * Executes a command in the Docker container to check if a specified file path exists.
      *
      * @param containerName     The name of the Docker container.
      * @param containerFilePath The file path within the container to be checked.
@@ -223,13 +214,11 @@ public class CompareFiles {
 
     /**
      * Calculates the SHA-256 hash of a file within a Docker container.
-     * Executes a command in the container to generate the hash of the specified
-     * file.
+     * Executes a command in the container to generate the hash of the specified file.
      *
      * @param containerName     The name of the Docker container.
      * @param containerFilePath The file path within the container to be hashed.
-     * @return The SHA-256 hash of the file as a String, or an error message if the
-     *         process fails.
+     * @return The SHA-256 hash of the file as a String, or an error message if the process fails.
      */
     private static String getContainerFileHash(String containerName, String containerFilePath)
             throws IOException, InterruptedException {
@@ -261,8 +250,7 @@ public class CompareFiles {
     }
 
     /**
-     * Calculates the SHA-256 hash of a local file, and reads the file and computes
-     * its SHA-256 hash.
+     * Calculates the SHA-256 hash of a local file, and reads the file and computes its SHA-256 hash.
      *
      * @param filePath The path of the file to be hashed.
      * @return The SHA-256 hash of the file as a String.
@@ -283,21 +271,27 @@ public class CompareFiles {
     }
 
     /**
-     * Converts a byte array into a hexadecimal string. Useful for representing hash
-     * values in a readable format.
+     * Converts a byte array into a hexadecimal string. 
+     * Useful for representing hash values in a readable format.
      *
      * @param bytes The byte array to be converted.
      * @return A hexadecimal string representation of the byte array.
      */
     public static String bytesToHex(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : bytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
+        StringBuilder hexString = new StringBuilder(); // StringBuilder to accumulate the hex values
+        
+        for (byte b : bytes) { // Iterate over each byte in the array
+
+            // Convert byte to hex, masking with 0xff to keep it positive
+            String hex = Integer.toHexString(0xff & b); 
+            
+            if (hex.length() == 1) { // If hex string is a single digit
+                hexString.append('0'); // Append '0' to make it two digits
             }
-            hexString.append(hex);
+            
+            hexString.append(hex); // Append the hex string for the current byte
         }
-        return hexString.toString();
+        
+        return hexString.toString(); // Return the complete hex string
     }
 }

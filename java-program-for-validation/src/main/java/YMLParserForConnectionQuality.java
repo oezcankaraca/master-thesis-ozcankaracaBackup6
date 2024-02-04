@@ -6,8 +6,8 @@ import java.util.*;
  * YMLParserForConnectionQuality class is designed to parse YAML files that define
  * network topologies and connection settings in a containerized environment.
  * It reads YAML configuration, extracts connection details between nodes,
- * and represents them in a structured format. This class is particularly useful
- * for network analysis and diagnostics in containerized network setups.
+ * and represents them in a structured format. 
+ * This class is particularly useful for network analysis and diagnostics in containerized network setups.
  *
  * @author Özcan Karaca
  */
