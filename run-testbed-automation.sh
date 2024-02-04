@@ -5,7 +5,7 @@ printf "\nStarting Testbed.\n\n"
 printf "\nStep Started: Choosing test case and moving data file.\n\n"
 
 # Define arrays for the variable values
-declare -a HAS_SUPERPEER_VALUES=("true" "false")
+declare -a HAS_SUPERPEER_VALUES=("false" "true")
 #declare -a NUMBER_OF_PEERS_VALUES=("5" "10" "20" "35" "50" "75")
 declare -a NUMBER_OF_PEERS_VALUES=("50" "75")
 declare -a CHOICE_OF_PDF_MB_VALUES=("1" "3" "5" "10" "15" "20" "30")
@@ -409,9 +409,12 @@ done
 avg_error_rate=0
 if [ "$count_error_rates" -gt 0 ]; then
     avg_error_rate=$(echo "scale=2; $total_error_rate / $count_error_rates" | bc)
+    avg_error_rate=$(printf "%.2f" "$avg_error_rate")
 fi
 
-printf "-----------------------------------------------------------------------------------------------------------------------------------------------\n"
+
+echo "-----------------------------------------------------------------------------------------------------------------------------------------------"
+echo ""
 
 if [[ -n "$trackerPeerId" ]]; then
     printf "\n--Logs for Container p2p-containerlab-topology-trackerPeer:--\n\n"
