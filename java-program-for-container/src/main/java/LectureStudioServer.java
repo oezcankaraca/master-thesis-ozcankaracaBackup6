@@ -305,23 +305,35 @@ public class LectureStudioServer {
         String prefixOfContainer = System.getenv("PREFIX_NAME_OF_CONTAINER");
 
         // Adding connection details into to conections
-        if (numberOfPeers == 6) {
-            Thread.sleep(50000);
-        } else if (numberOfPeers == 11) {
-            Thread.sleep(80000);
-        } else if (numberOfPeers == 21) {
-            Thread.sleep(200000);
-        } else if (numberOfPeers == 36) {
-            Thread.sleep(300000);
-        } else if (numberOfPeers == 51) {
-            Thread.sleep(400000);
-        } else if (numberOfPeers == 76) {
-            Thread.sleep(50000);
-        } else if (numberOfPeers == 101) {
-            Thread.sleep(800000);
-        } else if (numberOfPeers == 151) {
-            Thread.sleep(1200000);
-        }
+        switch (numberOfPeers) {
+            case 6:
+                Thread.sleep(50000);
+                break;
+            case 11:
+                Thread.sleep(80000);
+                break;
+            case 21:
+                Thread.sleep(150000);
+                break;
+            case 36:
+                Thread.sleep(250000);    
+                break;
+            case 51:
+                Thread.sleep(350000);
+                break;
+            case 76:
+                Thread.sleep(500000);
+                break;
+            case 101:
+                Thread.sleep(800000);
+                break;
+            case 151:
+                Thread.sleep(1200000);
+                break;
+            default:
+            // Handle any other number of peers that doesn't match above cases
+                break;
+        } 
 
         // Validation of he Network Characteristics
         // Thread.sleep(numberOfPeers * 30000);

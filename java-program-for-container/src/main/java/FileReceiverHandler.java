@@ -107,7 +107,7 @@ public class FileReceiverHandler extends SimpleChannelInboundHandler<ByteBuf> {
         long transferDuration = System.currentTimeMillis() - startTime;
 
         // Log file transfer details
-        System.out.println("Info: File received successfully: " + fileToReceivePath);
+        System.out.println("Success: File received successfully: " + fileToReceivePath);
         System.out.println("Info: Total received bytes: " + totalReceivedBytes);
         System.out.println("Info: File Transfer Time: " + transferDuration + " ms");
 

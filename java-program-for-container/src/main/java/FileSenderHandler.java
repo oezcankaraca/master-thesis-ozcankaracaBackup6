@@ -79,7 +79,7 @@ public class FileSenderHandler extends SimpleChannelInboundHandler<Object> {
                     if (future.isSuccess()) {
 
                         totalsentBytes = file.length();
-                        System.out.println("Info: File sent successfully: " + fileToSendPath);
+                        System.out.println("Success: File sent successfully: " + fileToSendPath);
                         System.out.println("Info: Total sent bytes: " + totalsentBytes);
                         // Updating the file transfer duration in the associated SuperPeer or LectureStudioServer
                         if (superPeer != null) {

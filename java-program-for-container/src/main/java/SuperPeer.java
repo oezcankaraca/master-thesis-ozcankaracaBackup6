@@ -17,24 +17,15 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * The SuperPeer class represents a key component in a distributed network
- * system,
- * providing both server and client functionalities. This class is responsible
- * for
- * sending and receiving files among peers in a network. It implements both the
- * server
- * side, which sends files to other peers, and the client side, which receives
- * files
- * from the lecutreStudio-server.
+ * The SuperPeer class represents a key component in a distributed network system,
+ * providing both server and client functionalities. This class is responsible for
+ * sending and receiving files among peers in a network. It implements both the  server side, 
+ * which sends files to other peers, and the client side, which receives files from the lecutreStudio-server.
  *
- * Utilizing the Netty library for network operations, this class is configured
- * to
- * listen on specific ports for server and client operations. It manages the
- * network
- * connection duration and file transfer duration to measure and analyze network
- * performance.
- * Additionally, it has mechanisms for managing connection status, including
- * retrying
+ * Utilizing the Netty library for network operations, this class is configured to
+ * listen on specific ports for server and client operations. It manages the network
+ * connection duration and file transfer duration to measure and analyze network performance.
+ * Additionally, it has mechanisms for managing connection status, including retrying
  * connection attempts and synchronizing file transfer processes.
  * 
  * @author Özcan Karaca
@@ -59,8 +50,7 @@ public class SuperPeer {
     /**
      * Constructs a SuperPeer instance with specified server and client ports, as
      * well as file paths for sending and receiving files.
-     * This constructor initializes the SuperPeer with necessary network parameters
-     * and logs its creation.
+     * This constructor initializes the SuperPeer with necessary network parameters and logs its creation.
      * 
      * @param serverPort        The port number on which the server will run.
      * @param clientPort        The port number on which the client will connect.
@@ -92,8 +82,7 @@ public class SuperPeer {
     /**
      * Starts the server component of the SuperPeer.
      * This method waits for the file to be received before starting the server.
-     * It sets up the network infrastructure to send files and waits for the
-     * completion of the file transfer.
+     * It sets up the network infrastructure to send files and waits for the completion of the file transfer.
      * 
      * @throws Exception If an error occurs during the server setup or operation.
      */
@@ -150,8 +139,7 @@ public class SuperPeer {
     }
 
     /**
-     * Initiates the client component of the SuperPeer to establish a network
-     * connection and receive files.
+     * Initiates the client component of the SuperPeer to establish a network connection and receive files.
      * This method sets up the network client, attempts to connect to a specified
      * server, and handles file reception.
      * 
@@ -277,8 +265,7 @@ public class SuperPeer {
 
     /**
      * The main method for the SuperPeer application.
-     * This method initializes the SuperPeer with network parameters, starts client
-     * and server threads,
+     * This method initializes the SuperPeer with network parameters, starts client and server threads,
      * and handles file transfer operations between peers.
      * 
      * @param args Command-line arguments (not used).
@@ -297,25 +284,36 @@ public class SuperPeer {
         String prefixOfContainer = System.getenv("PREFIX_NAME_OF_CONTAINER");
 
         // Adding connection details into to conections
-        if (numberOfPeers == 6) {
-            Thread.sleep(50000);
-        } else if (numberOfPeers == 11) {
-            Thread.sleep(80000);
-        } else if (numberOfPeers == 21) {
-            Thread.sleep(200000);
-        } else if (numberOfPeers == 36) {
-            Thread.sleep(300000);
-        } else if (numberOfPeers == 51) {
-            Thread.sleep(400000);
-        } else if (numberOfPeers == 76) {
-            Thread.sleep(50000);
-        } else if (numberOfPeers == 101) {
-            Thread.sleep(800000);
-        } else if (numberOfPeers == 151) {
-            Thread.sleep(1200000);
-        }
+        switch (numberOfPeers) {
+            case 6:
+                Thread.sleep(50000);
+                break;
+            case 11:
+                Thread.sleep(80000);
+                break;
+            case 21:
+                Thread.sleep(150000);
+                break;
+            case 36:
+                Thread.sleep(250000);
+                break;
+            case 51:
+                Thread.sleep(350000);
+                break;
+            case 76:
+                Thread.sleep(500000);
+                break;
+            case 101:
+                Thread.sleep(800000);
+                break;
+            case 151:
+                Thread.sleep(1200000);
+                break;
+            default:
+                // Handle any other number of peers that doesn't match above cases
+                break;
+        }        
  
-
         // Validation of he Network Characteristics
         //Thread.sleep(numberOfPeers * 30000);
         System.out.println("Info: Number Of Total Containern in Testbed: " + numberOfPeers);
