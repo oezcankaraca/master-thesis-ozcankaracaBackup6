@@ -371,7 +371,7 @@ max_error_rate=0
 total_error_rate=0
 count_error_rates=0
 
-printf "\n--Results of Error Rates for Transfer Time--\n"
+printf "\n--Results of Error Rates for Transfer Time--\n\n"
 
 for container_name in "${!measured_times[@]}"; do
     measured_time=${measured_times[$container_name]}

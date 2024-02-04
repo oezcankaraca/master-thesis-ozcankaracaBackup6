@@ -9,8 +9,8 @@ RUN apk update && \
 # Setting the working directory inside the container
 WORKDIR /app
 
-# Copying only the CentralManagementServer.java file into the working directory
-COPY TrackerPeer.java /app/
+# Copying only the TrackerPeer.java file into the working directory
+COPY src/main/java/TrackerPeer.java /app/
 
 # Compiling the Java program
 # javac is the compiler for the Java programming language
