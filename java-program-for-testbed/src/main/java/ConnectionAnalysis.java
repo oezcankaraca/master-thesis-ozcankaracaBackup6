@@ -67,8 +67,7 @@ public class ConnectionAnalysis {
      * Main method to start the connection analysis.
      * 
      * @param args Command-line arguments, which can include the number of peers.
-     * @throws IOException If there is an error in reading the input data or writing
-     *                     to the output file.
+     * @throws IOException If there is an error in reading the input data or writing to the output file.
      */
     public static void main(String[] args) throws IOException {
 
@@ -83,11 +82,13 @@ public class ConnectionAnalysis {
 
         System.out.println("Step: Analysing connection details\n");
 
-        // Setting up paths for input data and output file
+        // Get the user's home directory path
         String homeDirectory = System.getProperty("user.home");
+        // Define the base path for the master thesis's directory
         String basePath = homeDirectory + "/Desktop/master-thesis-ozcankaraca";
-
+        // Define the path for the network topology
         String pathToInputData = basePath + "/data-for-testbed/inputs/input-data-" + numberOfPeers + ".json";
+       
         fileOutput = new PrintStream(basePath + "/data-for-testbed/results/input-info/input-info-" + numberOfPeers + ".txt");
 
         // Read input data from JSON file
@@ -103,9 +104,7 @@ public class ConnectionAnalysis {
         Map<String, Long> uploadBandwidthMap = new HashMap<>();
         Map<String, Long> downloadBandwidthMap = new HashMap<>();
 
-        // Processing peer data to populate the bandwidth maps
-
-        // Process peer data to populate bandwidth maps
+        // Process peer data to populate the bandwidth maps
         printAndWrite("Info: Processing peer data.");
         for (int i = 0; i < peers.length(); i++) {
             JSONObject peer = peers.getJSONObject(i);
@@ -116,7 +115,7 @@ public class ConnectionAnalysis {
             uploadBandwidthMap.put(name, maxUpload);
         }
 
-        // Processing connection data and checking for full mesh connectivity
+        // Process connection data and checking for full mesh connectivity
         StringBuilder connectionDetails = new StringBuilder();
         Set<String> allConnections = new HashSet<>();
         Set<String> peerNames = new HashSet<>();

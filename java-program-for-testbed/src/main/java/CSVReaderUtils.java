@@ -168,9 +168,13 @@ public class CSVReaderUtils {
             }
         }
 
+        // Get the user's home directory path
         String homeDirectory = System.getProperty("user.home");
+        // Define the base path for the master thesis's directory
         String basePath = homeDirectory + "/Desktop/master-thesis-ozcankaraca";
+        // Specify the path to the CSV file
         String pathToCSV = basePath + "/data-for-testbed/data-for-realnetwork/fixed-broadband-speeds-august-2019-data-25.csv";
+        // Define the path to store the network statistics
         String pathToNetworkStatistics = basePath + "/data-for-testbed/results/network-statistics/network-statistics-50.txt";
 
         readCsvDataAndWriteToFile(pathToCSV, pathToNetworkStatistics, numberOfPeers);

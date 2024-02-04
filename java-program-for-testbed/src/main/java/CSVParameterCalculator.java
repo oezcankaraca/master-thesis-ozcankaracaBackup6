@@ -87,8 +87,7 @@ public class CSVParameterCalculator {
 
     /**
      * The main method to execute the CSVParameterCalculator.
-     * It reads the CSV file, processes the data, and prints out calculated
-     * statistical parameters.
+     * It reads the CSV file, processes the data, and prints out calculated statistical parameters.
      * 
      * @param args Command-line arguments (not used).
      */

@@ -19,8 +19,6 @@ public class DataGenerator {
 
     private Random random = new Random();
 
-    private int numberOfPeers;
-
     // Defined percentages for each technology type
     private final double adslPercentage = 77.30;
     private final double cablePercentage = 19.70;
@@ -50,7 +48,7 @@ public class DataGenerator {
      * @param numberOfPeers The number of peers for which network data is to be  generated.
      */
     public DataGenerator(int numberOfPeers) {
-        this.numberOfPeers = numberOfPeers;
+        DataGenerator.numberOfPeers = numberOfPeers;
 
         // Initialization of normal distributions with mean and standard deviation values
         adslUploadDistribution = new NormalDistribution(0.8241263021582734, 0.21124587974728493);
@@ -212,13 +210,25 @@ public class DataGenerator {
         return peerStatsList;
     }
 
+    private static int numberOfPeers = 10;
+
     /**
-     * The main method to execute the data generation process.
-     *
-     * @param args Command-line arguments (not used).
+     * Main method to start the connection analysis.
+     * 
+     * @param args Command-line arguments, which can include the number of peers.
+     * @throws IOException If there is an error in reading the input data or writing to the output file.
      */
-    public static void main(String[] args) {
-        int numberOfPeers = 10;
+    public static void main(String[] args) throws IOException {
+
+        // Read the number of peers from the environment variable or use the default value
+        if (args.length > 0) {
+            try {
+                numberOfPeers = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Argument must be an integer. The default value of 10 is used.");
+            }
+        }
+        
         DataGenerator dataGenerator = new DataGenerator(numberOfPeers);
         List<DataGenerator.PeerStats> generatedData = dataGenerator.generateNetworkData();
 

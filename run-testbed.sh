@@ -22,7 +22,7 @@ JAVA_PROGRAM_FOR_TESTBED_CLASS2="ConnectionAnalysis"
 JAVA_PROGRAM_FOR_TESTBED_CLASS3="NetworkConfigParser"
 JAVA_PROGRAM_FOR_TESTBED_CLASS4="ConnectionDetails"
 JAVA_PROGRAM_FOR_TESTBED_CLASS5="YMLGenerator"
-JAVA_PROGRAM_FOR_TESTBED_CLASS6="OnlyFromServerToPeers"
+JAVA_PROGRAM_FOR_TESTBED_CLASS6="OnlyFromLectureStudioServerToPeers"
 
 # Class names for the Java programs used in validation
 JAVA_PROGRAM_FOR_VALIDATION_CLASS1="ConnectionQuality"

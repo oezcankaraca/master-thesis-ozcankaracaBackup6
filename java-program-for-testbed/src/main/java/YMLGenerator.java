@@ -7,20 +7,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * The YMLGenerator class is designed for creating a YAML (YML) file that
- * defines the network topology
- * for a container-based network testbed. This class reads network configuration
- * details from a JSON file
- * and translates them into a YML format suitable for container orchestration
- * tools like ContainerLab.
- * It supports generating configurations for a lectureStudioServer, multiple
- * peers, superpeers and
- * trackerPeer, includes options for additional monitoring and visualization
- * tools like
+ * The YMLGenerator class is designed for creating a YAML (YML) file that defines the network topology
+ * for a container-based network testbed. This class reads network configuration details from a JSON file
+ * and translates them into a YML format suitable for container orchestration tools like ContainerLab.
+ * It supports generating configurations for a lectureStudioServer, multiple peers, super-peers and
+ * trackerPeer, includes options for additional monitoring and visualization tools like
  * Prometheus, cAdvisor, and Grafana.
- * The class handles the assignment of network interfaces, IP addresses, and
- * environment variables for each node
- * in the network, ensuring a cohesive and functional network setup for testing
+ * The class handles the assignment of network interfaces, IP addresses, and environment variables 
+ * for each node in the network, ensuring a cohesive and functional network setup for testing
  * and experimentation purposes.
  * 
  * @author Özcan Karaca
@@ -72,9 +66,8 @@ public class YMLGenerator {
             useSuperPeers = Boolean.parseBoolean(args[1]);
         }
 
-
         // Print the beginning of the YML file generation step.
-        System.out.println("\nStep: Creating YML file for testbed.");
+        System.out.println("\nStep Started: Creating YML file for testbed.");
 
         try {
 
@@ -95,12 +88,10 @@ public class YMLGenerator {
             // Generate link information based on the output data.
             generator.generateLinkInformation();
 
-            // Process the generated link information (this could involve additional logic
-            // or steps).
+            // Process the generated link information (this could involve additional logic or steps).
             processLinkInformation();
 
-            // Generate the topology file in YML format, including any extra nodes if
-            // required.
+            // Generate the topology file in YML format, including any extra nodes if required.
             generator.generateTopologyFile(includeExtraNodes);
 
             // Log the successful generation of the YML topology file.
@@ -113,14 +104,12 @@ public class YMLGenerator {
         }
 
         // Print the completion of the YML file generation step.
-        System.out.println("\nStep: Creating YML file for testbed is done.\n");
+        System.out.println("\nStep Done: Creating YML file for testbed is done.\n");
     }
 
     /**
-     * Constructor for the YMLGenerator class. Initializes the YMLGenerator with a
-     * specific configuration file.
-     * It reads and processes the output file containing network configuration
-     * details.
+     * Constructor for the YMLGenerator class. Initializes the YMLGenerator with a specific configuration file.
+     * It reads and processes the output file containing network configuration details.
      *
      * @param configFilePath The path to the configuration file.
      * @throws IOException If there is an error in reading the configuration file.
@@ -133,19 +122,18 @@ public class YMLGenerator {
 
     /**
      * Generates a topology file in YML format for network configuration.
-     * This file includes configurations for peers, superpeers, and trackerPeer.
+     * This file includes configurations for peers, super-peers, and trackerPeer.
      *
-     * @param includeExtraNodes Flag indicating whether to include additional nodes
-     *                          like Grafana, Prometheus, etc.
+     * @param includeExtraNodes Flag indicating whether to include additional nodes like Grafana, Prometheus.
      * @throws IOException If there is an error writing to the YML file.
      */
     public void generateTopologyFile(boolean includeExtraNodes) throws IOException {
         System.out.println("Info: Generating topology file.");
 
-        // Create a set to collect all peer names including superpeers.
+        // Create a set to collect all peer names including supe-rpeers.
         Set<String> allPeers = new HashSet<>();
 
-        // Get the names of superpeers.
+        // Get the names of super-peers.
         Set<String> superPeerNames = superPeerToPeersMap.keySet();
 
         // Define topology parameters.
@@ -153,7 +141,7 @@ public class YMLGenerator {
         String prefixOfTopology = "p2p";
         String subnetOfTopology = "172.100.100.0/24";
 
-        // Collect all peer names including superpeers.
+        // Collect all peer names including super-peers.
         for (String superPeer : superPeerToPeersMap.keySet()) {
             allPeers.add(superPeer);
             allPeers.addAll(superPeerToPeersMap.get(superPeer));
@@ -303,8 +291,7 @@ public class YMLGenerator {
     }
 
     /**
-     * Appends additional monitoring and visualization tools (Prometheus, cAdvisor,
-     * Grafana) to the YML configuration.
+     * Appends additional monitoring and visualization tools to the YML configuration.
      * These tools are used for monitoring the network and visualizing metrics.
      *
      * @param fw FileWriter instance used to write to the YML file.
@@ -343,11 +330,10 @@ public class YMLGenerator {
     }
 
     /**
-     * Appends binding and execution commands to the YML file for either superpeer
-     * normal peer nodes.
+     * Appends binding and execution commands to the YML file for either super-peer or peer nodes.
      *
      * @param fw          FileWriter instance used to write to the YML file.
-     * @param isSuperPeer Boolean flag to indicate if the node is a superpeer.
+     * @param isSuperPeer Boolean flag to indicate if the node is a super-peer.
      * @throws IOException If an error occurs while writing to the file.
      */
     private void appendBindsAndExec(FileWriter fw, boolean isSuperPeer) throws IOException {
@@ -366,7 +352,7 @@ public class YMLGenerator {
             fw.write("        - chmod +x /app/connection-details-superpeer.sh\n");
             fw.write("        - ./connection-details-superpeer.sh\n");
         } else {
-            // Bind and execution commands for superpeers
+            // Bind and execution commands for super-peers
             fw.write("      binds:\n");
             fw.write(
                     "        - " + basePath
@@ -381,13 +367,10 @@ public class YMLGenerator {
 
     /**
      * Generates an IP address for a node within the network.
-     * The IP address is generated based on the connection counter and the node's
-     * position.
+     * The IP address is generated based on the connection counter and the node's position.
      *
-     * @param connectionCounter The connection number in the sequence of generated
-     *                          connections.
-     * @param isFirstNode       Boolean indicating if the node is the first in the
-     *                          connection pair.
+     * @param connectionCounter The connection number in the sequence of generated connections.
+     * @param isFirstNode       Boolean indicating if the node is the first in the connection pair.
      * @return Generated IP address as a String.
      */
     private static String generateIpAddress(int connectionCounter, boolean isFirstNode) {
@@ -397,10 +380,9 @@ public class YMLGenerator {
     }
 
     /**
-     * Processes link information to assign IP addresses and environment variables
-     * for each connection.
+     * Processes link information to assign IP addresses and environment variables for each connection.
      * This method generates IP addresses for each link and updates environment
-     * variables for peers and superpeers.
+     * variables for peers and super-peers.
      */
     public static void processLinkInformation() {
         int connectionCounter = 1;
@@ -419,8 +401,7 @@ public class YMLGenerator {
             peerEnvVariables.put(node2Details[0], node2Ip);
             peerEnvVariablesSuperPeerIP.put(node2Details[0], node1Ip);
 
-            // Storing connection details in the respective superpeer or lectureStudioServer
-            // environment variables
+            // Storing connection details in the node environment variables
             if (node1Details[0].equals("lectureStudioServer")) {
                 lectureStudioServerEnvVariables.put("CONNECTION_" + connectionCounter, envVariableValue);
             } else {
@@ -434,11 +415,9 @@ public class YMLGenerator {
 
     /**
      * Assigns an interface name (e.g., eth1, eth2) for a given node.
-     * The interface name is generated based on the number of interfaces already
-     * assigned to the node.
+     * The interface name is generated based on the number of interfaces already assigned to the node.
      *
-     * @param nodeName The name of the node for which the interface is to be
-     *                 assigned.
+     * @param nodeName The name of the node for which the interface is to be assigned.
      * @return The interface name as a String.
      */
     private String assignInterface(String nodeName) {
@@ -451,18 +430,16 @@ public class YMLGenerator {
     }
 
     /**
-     * Determines the superpeer responsible for a given peer.
-     * It iterates through the map of superpeers to their connected peers to find
-     * the corresponding superpeer.
+     * Determines the super-peer responsible for a given peer.
+     * It iterates through the map of super-peers to their connected peers to find the corresponding super-peer.
      *
-     * @param peerName The name of the peer whose superpeer is to be determined.
-     * @return The name of the superpeer.
+     * @param peerName The name of the peer whose super-peer is to be determined.
+     * @return The name of the super-peer.
      */
     private String determineSuperPeerForPeer(String peerName) {
-        // Iterate over each superpeer and their connected peers
+        // Iterate over each super-peer and their connected peers
         for (Map.Entry<String, Set<String>> entry : superPeerToPeersMap.entrySet()) {
-            // Check if the current superpeer has the given peer in its set of connected
-            // peers
+            // Check if the current super-peer has the given peer in its set of connected peers
             if (entry.getValue().contains(peerName)) {
                 return entry.getKey();
             }
@@ -473,8 +450,7 @@ public class YMLGenerator {
 
     /**
      * Reads and processes the output JSON file to extract network connections.
-     * This method constructs a map of superpeers and their connected peers based on
-     * the output file.
+     * This method constructs a map of super-peers and their connected peers based on the output file.
      */
     private void readAndProcessOutputFile() {
         System.out.println("Info: Reading and processing the output file.");
@@ -498,7 +474,7 @@ public class YMLGenerator {
                 String sourceName = connection.path("sourceName").asText();
                 String targetName = connection.path("targetName").asText();
 
-                // Add the source (superpeer) and target (peer) relationship to the map
+                // Add the source (super-peer) and target (peer) relationship to the map
                 superPeerToPeersMap.putIfAbsent(sourceName, new HashSet<>());
                 superPeerToPeersMap.get(sourceName).add(targetName);
             }
@@ -509,7 +485,7 @@ public class YMLGenerator {
 
     /**
      * Generates information about the links between nodes in the network.
-     * This method creates a set of unique connections between superpeers and their
+     * This method creates a set of unique connections between super-peers and their
      * peers and between lectureStudioServer and its peers.
      */
     public void generateLinkInformation() {
@@ -524,15 +500,14 @@ public class YMLGenerator {
                 String lectureStudioInterface = assignInterface("lectureStudioServer");
                 String peerInterface = assignInterface(peer);
 
-                // Create a formatted string representing the link information for
-                // lectureStudioServer
+                // Create a formatted string representing the link information for lectureStudioServer
                 String linkInfo = "lectureStudioServer:" + lectureStudioInterface + ", " + peer + ":" + peerInterface;
                 linkInformation.add(linkInfo);
                 uniqueConnections.add(peer);
             }
         }
 
-        // Iterate over each superpeer and their connected peers
+        // Iterate over each super-peer and their connected peers
         for (String superPeer : superPeerToPeersMap.keySet()) {
             Set<String> connectedPeers = superPeerToPeersMap.getOrDefault(superPeer, new HashSet<>());
             for (String peer : connectedPeers) {
@@ -540,7 +515,7 @@ public class YMLGenerator {
                     String superPeerInterface = assignInterface(superPeer);
                     String peerInterface = assignInterface(peer);
 
-                    // Create a formatted string representing the link information for superpeer
+                    // Create a formatted string representing the link information for super-peer
                     String linkInfo = superPeer + ":" + superPeerInterface + ", " + peer + ":" + peerInterface;
                     linkInformation.add(linkInfo);
                     uniqueConnections.add(peer);

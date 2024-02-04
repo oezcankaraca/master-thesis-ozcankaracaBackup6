@@ -177,8 +177,7 @@ public class CSVSampler {
      * @param random                An instance of Random for generating random indices.
      * @param sampleCount           The number of samples needed for the specified technology.
      * @param technology            The name of the technology for which samples are being taken.
-     * @param technologyColumnIndex The index of the column that contains the
-     *                              technology information.
+     * @param technologyColumnIndex The index of the column that contains the technology information.
      */
     private static void sampleRowsTechnology(List<String[]> allRows, List<String[]> sampledRows,
             Random random, int sampleCount, String technology, int technologyColumnIndex) {

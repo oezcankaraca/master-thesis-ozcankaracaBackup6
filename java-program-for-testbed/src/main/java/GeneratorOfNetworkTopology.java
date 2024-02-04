@@ -13,23 +13,18 @@ import java.util.Locale;
 import java.util.Random;
 
 /**
- * The GeneratorOfNetworkTopology class is responsible for creating a simulated
- * network topology.
- * This class generates a JSON representation of a network, including various
+ * The GeneratorOfNetworkTopology class is responsible for creating a simulated network topology.
+ * This class generates a JSON representation of a network topology, including various
  * network parameters and connections between peers.
- * It includes functionalities to generate data for each peer (like
- * upload/download speeds, latency, packet loss),
- * establish connections between peers, and output the final network topology in
- * a JSON format.
- * The class is designed to simulate a realistic network environment for testing
- * purposes.
+ * It includes functionalities to collect and analyze data for each peer 
+ * (like upload/download speeds, latency, packet loss),
+ * establish connections between peers, and output the final network topology in a JSON format.
+ * The class is designed to simulate a realistic network environment for testing purposes.
  *
- * Usage: This class is used in a process that involves generating simulated
- * network data for a specified
- * number of peers, including a special peer named 'lectureStudioServer'.
+ * Usage: This class is used in a process that involves collecting simulated network data for a specified
+ * number of peers, including a special peer named lectureStudioServer.
  * It then generates a JSON file that describes the network topology,
- * including connections between these peers and their respective network
- * parameters.
+ * including connections between these peers and their respective network parameters.
  * 
  * @author Özcan Karaca
  */
@@ -40,13 +35,11 @@ public class GeneratorOfNetworkTopology {
 
     /**
      * The main method to initiate the generation of network topology data.
-     * It begins by generating simulated network data for a specified number of
-     * peers, including lectureStudioServer.
-     * Then, it proceeds to create a network topology in JSON format, detailing
-     * onnections between peers.
+     * It begins by collecting simulated network data for a specified number of peers, 
+     * including lectureStudioServer.
+     * Then, it proceeds to create a network topology in JSON format, detailing  onnections between peers.
      *
-     * @param args Command line arguments, expects the number of peers as an
-     *             optional argument.
+     * @param args Command line arguments, expects the number of peers as an optional argument.
      */
     public static void main(String[] args) {
 
@@ -59,7 +52,7 @@ public class GeneratorOfNetworkTopology {
             }
         }
 
-        System.out.println("\n**1.STEP: GENERATING REAL NETWORK DATA**\n");
+        System.out.println("\nStep Started: Collecting and analyzing real network data.\n");
 
         // Create an instance of DataGenerator to generate network data
         DataGenerator dataGenerator = new DataGenerator(numberOfPeers);
@@ -85,7 +78,7 @@ public class GeneratorOfNetworkTopology {
 
         peerStatsList.add(lectureStudioServerStats);
 
-        // Add the special peer 'lectureStudioServer' to the JSON array
+        // Add the special peer lectureStudioServer to the JSON array
         peersArray.add(lectureStudioServerObject);
 
         // Get the user's home directory path
@@ -101,7 +94,7 @@ public class GeneratorOfNetworkTopology {
                     + " peers and the lectureStudioServer.\n");
 
             // Print detailed information about the generated network data
-            System.out.println("--Details of Generating Real Network Data:--\n");
+            System.out.println("--Details of Collecting and Analyzing Real Network Data:--\n");
             for (DataGenerator.PeerStats stats : peerStatsList) {
                 String dataRow = stats.toString();
                 // Write each peer's data to the output file
@@ -116,7 +109,7 @@ public class GeneratorOfNetworkTopology {
             System.err.println("Unsuccess: Error while writing the file: " + e.getMessage());
         }
 
-        System.out.println("\n**1.STEP IS DONE.**\n");
+        System.out.println("\nStep Done: Collecting and analyzing real network data.\n");
 
         try {
             Thread.sleep(1000);
@@ -127,7 +120,7 @@ public class GeneratorOfNetworkTopology {
         // Define the path for the JSON file that will represent the network topology
         String pathToInputData = basePath + "/data-for-testbed/inputs/input-10/input-data-" + numberOfPeers + ".json";
 
-        System.out.println("Step: Generating network topology\n");
+        System.out.println("Step Started: Generating network topology.\n");
 
         // Generate a JSON object representing the input data for network topology
         JsonObject inputDataObject = generateInputDataObject(peerStatsList);
@@ -141,13 +134,10 @@ public class GeneratorOfNetworkTopology {
 
     /**
      * Generates a JSON object representing the input data for the network topology.
-     * This method creates a JSON object with details of each peer, including the
-     * lectureStudioServer,
-     * and their respective network parameters like maximum upload and download
-     * speeds.
+     * This method creates a JSON object with details of each peer, including the lectureStudioServer,
+     * and their respective network parameters like maximum upload and download  speeds.
      *
-     * @param peerStatsList A list of PeerStats objects containing network data for
-     *                      each peer.
+     * @param peerStatsList A list of PeerStats objects containing network data for each peer.
      * @return A JsonObject representing the network topology's input data.
      */
     private static JsonObject generateInputDataObject(List<DataGenerator.PeerStats> peerStatsList) {
@@ -183,14 +173,11 @@ public class GeneratorOfNetworkTopology {
 
     /**
      * Creates a JSON array of connections between peers in the network.
-     * Each connection object includes the source and target peer names, bandwidth,
-     * latency, and packet loss.
+     * Each connection object includes the source and target peer names, bandwidth, latency, and packet loss.
      * Connections are shuffled to randomize the network topology.
      *
-     * @param peerStatsList A list of PeerStats objects containing network data for
-     *                      each peer.
-     * @return A JsonArray of connection objects representing the network
-     *         connections.
+     * @param peerStatsList A list of PeerStats objects containing network data for each peer.
+     * @return A JsonArray of connection objects representing the network connections.
      */
     private static JsonArray createConnectionsArray(List<DataGenerator.PeerStats> peerStatsList) {
         System.out.println("Info: Generating connection data for peers.");
@@ -264,7 +251,7 @@ public class GeneratorOfNetworkTopology {
             new GsonBuilder().setPrettyPrinting().create().toJson(jsonObject, file);
 
             System.out.println("Info: Input data JSON has been saved to the file: " + filePath);
-            System.out.println("\nStep: Generating network topology is done.\n");
+            System.out.println("\nStep Done: Generating the network topology is done.\n");
 
         } catch (IOException e) {
             System.err.println("Error: Error encountered while writing to JSON file.");

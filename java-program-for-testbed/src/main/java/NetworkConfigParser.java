@@ -10,23 +10,18 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 /**
- * The NetworkConfigParser class is designed for parsing and processing network
- * configuration data.
+ * The NetworkConfigParser class is designed for parsing and processing network configuration data.
  * This class reads a JSON file that defines the network topology, including
  * peer-to-peer connections and superpeers.
- * It provides functionalities to extract and organize various aspects of the
- * network configuration such as:
+ * It provides functionalities to extract and organize various aspects of the network configuration such as:
  * - The names of superpeers.
  * - Peer-to-peer connection details.
  * - Mapping superpeers to their connected peers.
- * - Generating a list of distinct peer names, excluding superpeers and the
- * lectureStudioServer.
+ * - Generating a list of distinct peer names, excluding superpeers and the lectureStudioServer.
  *
  * Usage: This class is used to parse network configuration data from a JSON file, facilitating the
- * understanding and analysis of the network topology. It is particularly useful
- * in scenarios where
- * network configurations need to be dynamically read and interpreted for
- * simulation or analysis purposes.
+ * understanding and analysis of the network topology. It is particularly useful in scenarios where
+ * network configurations need to be dynamically read and interpreted for simulation or analysis purposes.
  * 
  * @author Özcan Karaca
  */
@@ -86,11 +81,9 @@ public class NetworkConfigParser {
     /**
      * Constructor for the NetworkConfigParser class.
      * Initializes the parser with the provided configuration file path.
-     * It reads the JSON configuration file and loads it into the NetworkConfig
-     * object.
+     * It reads the JSON configuration file and loads it into the NetworkConfig object.
      *
-     * @param configFilePath The path to the JSON file containing network
-     *                       configuration data.
+     * @param configFilePath The path to the JSON file containing network configuration data.
      * @throws IOException If there is an issue reading the file.
      */
     public NetworkConfigParser(String configFilePath) throws IOException {
@@ -119,8 +112,7 @@ public class NetworkConfigParser {
             return new ArrayList<>(); // Return an empty list
         }
 
-        // Extracts and returns a list of names of superpeers from the network
-        // configuration
+        // Extracts and returns a list of names of superpeers from the network configuration
         return config.getSuperpeers().stream()
                 .map(Superpeer::getName)
                 .collect(Collectors.toList());
@@ -128,17 +120,14 @@ public class NetworkConfigParser {
 
     /**
      * Retrieves all peer-to-peer connections defined in the network configuration.
-     * This method returns a list of PeerConnection objects, each representing a
-     * connection between two peers.
+     * This method returns a list of PeerConnection objects, each representing a connection between two peers.
      *
-     * @return A list of PeerConnection objects representing peer-to-peer
-     *         connections.
+     * @return A list of PeerConnection objects representing peer-to-peer connections.
      */
     public List<PeerConnection> getPeerConnections() {
         System.out.println("Info: Retrieving peer-to-peer connections.");
 
-        // Returns a list of PeerConnection objects representing all peer-to-peer
-        // connections defined in the network configuration
+        // Returns a list of PeerConnection representing all P2P connections in the network configuration.
         return config.getPeer2peer();
     }
 
@@ -171,20 +160,17 @@ public class NetworkConfigParser {
     }
 
     /**
-     * Gathers a list of distinct peer names, excluding superpeers and the
-     * lectureStudioServer.
+     * Gathers a list of distinct peer names, excluding superpeers and the lectureStudioServer.
      * This method processes the configuration data to compile a list of unique peer
      * names that are not superpeers.
      *
-     * @return A list of peer names excluding superpeers and the
-     *         lectureStudioServer.
+     * @return A list of peer names excluding superpeers and the lectureStudioServer.
      */
     public List<String> getPeers() {
         System.out.println("Info: Gathering distinct peer names, excluding superpeers and the lectureStudioServer.");
         List<String> superpeerNames = getSuperpeerNames();
 
-        // Compiles a list of unique peer names that are not superpeers or the
-        // lectureStudioServer
+        // Compiles a list of unique peer names that are not superpeers or the lectureStudioServer
         return config.getPeer2peer().stream()
                 .map(PeerConnection::getTargetName)
                 .filter(peerName -> !superpeerNames.contains(peerName) && !"lectureStudioServer".equals(peerName))
@@ -197,12 +183,11 @@ public class NetworkConfigParser {
 
     /**
      * The main method to execute the NetworkConfigParser.
-     * Processes arguments, reads network configuration data, and displays
-     * information about peers and connections.
+     * Processes arguments, reads network configuration data, and displays information 
+     * about peers and connections.
      *
      * @param args Command-line arguments.
-     * @throws IOException If there is an issue reading the network configuration
-     *                     file.
+     * @throws IOException If there is an issue reading the network configuration file.
      */
     public static void main(String[] args) throws IOException {
 

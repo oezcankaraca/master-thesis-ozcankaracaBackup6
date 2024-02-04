@@ -19,6 +19,31 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The ConnectionDetails class simulates and manages P2P network connections,
+ * focusing on statistics related to network characteristics among peers.
+ * It leverages the Gson library to read and write JSON data, indicating that the program handles
+ * JSON data for input/output operations related to network configurations and statistics.
+ * 
+ * The primary functionalities include reading network configuration data from JSON files,
+ * processing command-line arguments to customize the simulation, calculating and allocating
+ * bandwidth resources among peers, as well as writing updated configurations and statistics
+ * back to JSON files. The class also allows for adjustments to the simulated P2P network's
+ * behavior through command-line arguments, including the number of peers, the use of super-peers,
+ * and the size of files to be transferred.
+ * 
+ * Features:
+ * - Reading network configuration data from JSON files.
+ * - Processing command-line arguments to adjust simulation parameters.
+ * - Calculating bandwidth allocation based on peer statistics.
+ * - Evaluating and displaying transfer times for files of various sizes.
+ * - Writing peer information and network statistics back to JSON files.
+ * 
+ * This class is particularly useful in scenarios where detailed analysis and management
+ * of network resources in a distributed system are required.
+ * 
+ * @author Özcan Karaca
+ */
 public class ConnectionDetails {
     static Map<String, PeerStats> peerStatsMap = new HashMap<>();
 
@@ -79,7 +104,7 @@ public class ConnectionDetails {
             choiceOfPdfMB = Integer.parseInt(args[2]);
         }
 
-        // Adding size details into to conections
+        // Assigns the size of a PDF file based on the user's choice of file size in megabytes (MB).
         if (choiceOfPdfMB == 1) {
             sizeOfPDF = 1042157;
         } else if (choiceOfPdfMB == 3) {
@@ -115,7 +140,7 @@ public class ConnectionDetails {
                 + numberOfPeers + ".json";
         String pathToJsonInput = basePath + "/data-for-testbed/inputs/input-data-" + numberOfPeers + ".json";
 
-        System.out.println("\nStep: Combining connection details\n");
+        System.out.println("\nStep Started: Combining connection details\n");
         System.out.println("Info: Starting connection details from output-data and input data");
 
         Set<String> peerIds = new HashSet<>();
@@ -290,8 +315,8 @@ public class ConnectionDetails {
     }
 
     /**
-     * Writes connection properties to a JSON file, including source name, target
-     * name, bandwidth, latency, and loss.
+     * Writes connection properties to a JSON file, including source name, target name, 
+     * bandwidth, latency, and loss.
      *
      * @param outputData          The JSON object containing output data.
      * @param filePath            The path to the output file.
@@ -346,8 +371,7 @@ public class ConnectionDetails {
      *
      * @param peer2peer    The JSON array containing peer-to-peer connections.
      * @param peerStatsMap The map containing peer statistics.
-     * @return A map of connection keys (sourceName-targetName) to allocated
-     *         bandwidth.
+     * @return A map of connection keys (sourceName-targetName) to allocated bandwidth.
      */
     private static Map<String, Integer> calculateBandwidthAllocation(JsonArray peer2peer,
             Map<String, PeerStats> peerStatsMap) {
@@ -439,8 +463,7 @@ public class ConnectionDetails {
     }
 
     /**
-     * Finds all target peers for a given source peer in the JSON array of
-     * connections.
+     * Finds all target peers for a given source peer in the JSON array of connections.
      *
      * @param peer2peer  The JSON array containing peer-to-peer connections.
      * @param sourceName The name of the source peer.
@@ -458,5 +481,4 @@ public class ConnectionDetails {
         }
         return targetNames;
     }
-
 }
