@@ -61,6 +61,7 @@ public class ConnectionAnalysis {
         return missingConnections;
     }
 
+    // Default number of peers
     private static int numberOfPeers = 10;
 
     /**
@@ -151,8 +152,8 @@ public class ConnectionAnalysis {
             allConnections.add(source + "-" + target);
         }
 
-        // Print all connection details
         /** 
+        // Print all connection details
         printAndWrite("--Connection Analysis--\n");
         printAndWrite(connectionDetails.toString());
         System.out.println(

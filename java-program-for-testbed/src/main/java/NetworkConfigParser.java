@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 /**
  * The NetworkConfigParser class is designed for parsing and processing network configuration data.
- * This class reads a JSON file that defines the network topology, including
- * peer-to-peer connections and superpeers.
- * It provides functionalities to extract and organize various aspects of the network configuration such as:
+ * This class reads a JSON file that defines the network topology, including P2P connections and superpeers.
+ * It provides functionalities to extract and organize various aspects of the
+ * network configuration such as:
  * - The names of superpeers.
- * - Peer-to-peer connection details.
+ * - P2P connection details.
  * - Mapping superpeers to their connected peers.
  * - Generating a list of distinct peer names, excluding superpeers and the lectureStudioServer.
  *
@@ -27,50 +27,71 @@ import java.util.stream.Collectors;
  */
 public class NetworkConfigParser {
 
+    /**
+     * Represents a single P2P connection in the network.
+     * It stores the names of the source and target peers involved in the connection.
+     */
     static class PeerConnection {
-        private String targetName;
-        private String sourceName;
+        private String targetName; // Name of the target peer
+        private String sourceName; // Name of the source peer
 
+        // Returns the name of the target peer.
         public String getTargetName() {
             return targetName;
         }
 
+        // Returns the name of the source peer.
         public String getSourceName() {
             return sourceName;
         }
 
+        // Default constructor for use with data binding libraries or for manual instantiation.
         public PeerConnection() {
         }
 
+        // Constructs a PeerConnection with specified source and target peers.
         public PeerConnection(String sourceName, String targetName) {
             this.sourceName = sourceName;
             this.targetName = targetName;
         }
     }
 
+    /**
+     * Represents a superpeer in the network, which may act as a central node
+     * for a subset of peers, facilitating efficient data distribution.
+     */
     static class Superpeer {
-        private String name;
+        private String name; // Name of the superpeer
 
+        // Returns the name of the superpeer.
         public String getName() {
             return name;
         }
 
+        // Default constructor for use with data binding libraries or for manual instantiation.
         public Superpeer() {
         }
 
+        // Constructs a Superpeer with a specified name.
         public Superpeer(String name) {
             this.name = name;
         }
     }
 
+    /**
+     * Encapsulates the entire network configuration, including peer-to-peer connections
+     * and superpeers. This class provides a top-level view of the network's structure.
+     */
     static class NetworkConfig {
-        private List<PeerConnection> peer2peer;
-        private List<Superpeer> superpeers;
+        private List<PeerConnection> peer2peer; // List of peer-to-peer connections
+        private List<Superpeer> superpeers; // List of superpeers in the network
 
+        // Returns the list of peer-to-peer connections.
         public List<PeerConnection> getPeer2peer() {
             return peer2peer;
         }
 
+        // Returns the list of superpeers.
         public List<Superpeer> getSuperpeers() {
             return superpeers;
         }
@@ -119,10 +140,11 @@ public class NetworkConfigParser {
     }
 
     /**
-     * Retrieves all peer-to-peer connections defined in the network configuration.
+     * Retrieves all P2P connections defined in the network configuration.
      * This method returns a list of PeerConnection objects, each representing a connection between two peers.
      *
-     * @return A list of PeerConnection objects representing peer-to-peer connections.
+     * @return A list of PeerConnection objects representing peer-to-peer
+     *         connections.
      */
     public List<PeerConnection> getPeerConnections() {
         System.out.println("Info: Retrieving peer-to-peer connections.");
@@ -164,7 +186,8 @@ public class NetworkConfigParser {
      * This method processes the configuration data to compile a list of unique peer
      * names that are not superpeers.
      *
-     * @return A list of peer names excluding superpeers and the lectureStudioServer.
+     * @return A list of peer names excluding superpeers and the
+     *         lectureStudioServer.
      */
     public List<String> getPeers() {
         System.out.println("Info: Gathering distinct peer names, excluding superpeers and the lectureStudioServer.");
@@ -182,9 +205,7 @@ public class NetworkConfigParser {
     private static boolean useSuperPeers = true;
 
     /**
-     * The main method to execute the NetworkConfigParser.
-     * Processes arguments, reads network configuration data, and displays information 
-     * about peers and connections.
+     * Reads network configuration data, and displays information about peers and connections.
      *
      * @param args Command-line arguments.
      * @throws IOException If there is an issue reading the network configuration file.
@@ -210,7 +231,8 @@ public class NetworkConfigParser {
         // Constructs the path to the output data file based on the number of peers
         String pathToOutputData;
         if (useSuperPeers) {
-            pathToOutputData = basePath + "/data-for-testbed/outputs-with-superpeer/output-data-" + numberOfPeers + ".json";
+            pathToOutputData = basePath + "/data-for-testbed/outputs-with-superpeer/output-data-" + numberOfPeers
+                    + ".json";
         } else {
             pathToOutputData = basePath + "/data-for-testbed/outputs-without-superpeer/output-data-" + numberOfPeers
                     + ".json";

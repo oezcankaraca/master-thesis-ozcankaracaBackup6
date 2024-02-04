@@ -48,8 +48,8 @@ public class ConnectionDetails {
     static Map<String, PeerStats> peerStatsMap = new HashMap<>();
 
     /**
-     * This class represents statistics for a peer, including max upload speed, max
-     * download speed, latency, and packet loss.
+     * This class represents statistics for a peer, including max upload speed, max download speed, 
+     * latency, and packet loss.
      */
     static class PeerStats {
         int maxUpload;
@@ -71,10 +71,12 @@ public class ConnectionDetails {
         }
     }
 
-    private static boolean useSuperPeers = true;
+    // Default number of peers, use of super-peer, choice of size pdf file
     private static int numberOfPeers = 10;
+    private static boolean useSuperPeers = true;
     private static int choiceOfPdfMB = 1;
-    private static int sizeOfPDF = 1;
+
+    private static int sizeOfPDF;
 
     /**
      * The main method for the program.
