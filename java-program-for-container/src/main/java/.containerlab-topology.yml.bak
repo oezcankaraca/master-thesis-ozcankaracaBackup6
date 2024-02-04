@@ -26,8 +26,7 @@ topology:
         NUMBER_OF_TOTAL_PEERS: 6
         PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
         SOURCE_PEER: lectureStudioServer
-        TARGET_PEERS: 1,2,3,4,5
-        CONNECTION_5: eth5:172.20.25.2, 5:172.20.25.3
+        TARGET_PEERS: 1,2,3,4
         CONNECTION_4: eth4:172.20.24.2, 4:172.20.24.3
         CONNECTION_3: eth3:172.20.23.2, 3:172.20.23.3
         CONNECTION_2: eth2:172.20.22.2, 2:172.20.22.3
@@ -116,21 +115,24 @@ topology:
       env:
         NUMBER_OF_TOTAL_PEERS: 6
         PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
-        SOURCE_PEER: 4
         IP_ADDRES: 172.20.24.3
         SUPER_PEER: lectureStudioServer
         SUPER_PEER_IP_ADDRES: 172.20.24.2
-        MAIN_CLASS: Peer
+        SOURCE_PEER: 4
+        TARGET_PEERS: 5
+        CONNECTION_5: eth2:172.20.25.2, 5:172.20.25.3
+        MAIN_CLASS: SuperPeer
       labels:
-        role: receiver
-        group: peer
+        role: receiver/sender
+        group: superpeer
       binds:
-        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/script-for-connection/connection-details-peer.sh:/app/connection-details-peer.sh
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/connection-details/connection-details-5.json:/app/connection-details-5.json
+        - /home/ozcankaraca/Desktop/master-thesis-ozcankaraca/data-for-testbed/script-for-connection/connection-details-superpeer.sh:/app/connection-details-superpeer.sh
       exec:
         - sleep 5
         - /bin/sh -c 'while ! ping -c 1 172.100.100.12 > /dev/null; do echo "Waiting for lectureStudioServer"; sleep 1; done'
-        - chmod +x /app/connection-details-peer.sh
-        - ./connection-details-peer.sh
+        - chmod +x /app/connection-details-superpeer.sh
+        - ./connection-details-superpeer.sh
     5:
       kind: linux
       image: image-testbed
@@ -139,7 +141,7 @@ topology:
         PREFIX_NAME_OF_CONTAINER: p2p-containerlab-topology
         SOURCE_PEER: 5
         IP_ADDRES: 172.20.25.3
-        SUPER_PEER: lectureStudioServer
+        SUPER_PEER: 4
         SUPER_PEER_IP_ADDRES: 172.20.25.2
         MAIN_CLASS: Peer
       labels:
@@ -157,4 +159,4 @@ topology:
     - endpoints: [lectureStudioServer:eth2, 2:eth1]
     - endpoints: [lectureStudioServer:eth3, 3:eth1]
     - endpoints: [lectureStudioServer:eth4, 4:eth1]
-    - endpoints: [lectureStudioServer:eth5, 5:eth1]
+    - endpoints: [4:eth2, 5:eth1]

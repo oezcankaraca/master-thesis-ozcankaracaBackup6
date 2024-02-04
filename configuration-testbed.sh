@@ -1,26 +1,18 @@
 #!/bin/bash
 
-printf "\nStarting Testbed.\n\n"
-
 printf "\nStep Started: Choosing test case and moving data file.\n\n"
 
-# Define arrays for the variable values
-declare -a has_superpeer_values=("false" "true")
-#declare -a has_superpeer_values=("5" "10" "20" "35" "50" "75")
-declare -a number_of_peers_values=("5" "75")
-declare -a choice_of_pdf_mb_values=("5" "10" "15" "20" "30")
+IFS=' ' read -r -a has_superpeer_values <<< "$has_superpeer_values"
+IFS=' ' read -r -a number_of_peers_values <<< "$number_of_peers_values"
+IFS=' ' read -r -a choice_of_pdf_mb_values <<< "$choice_of_pdf_mb_values"
 
-declare -A calculated_times
-declare -A measured_times
+IFS=' ' read -r -a BASE_PATH <<< "$BASE_PATH"
 
 # Iterate over each combination of variable values
 for has_superpeer in "${has_superpeer_values[@]}"; do
     for number_of_peers in "${number_of_peers_values[@]}"; do
         for choice_of_pdf_mb in "${choice_of_pdf_mb_values[@]}"; do
             echo "Info: Running test with has_superpeer=$has_superpeer, number_of_peers=$number_of_peers, choice_of_pdf_mb=$choice_of_pdf_mb"
-
-# Base directory path where all project-related files are located
-BASE_PATH="$HOME/Desktop"
 
 # Paths to various components of the Java programs used in the testbed
 JAVA_PROGRAM_FOR_TESTBED_PATH="$BASE_PATH/master-thesis-ozcankaraca/java-program-for-testbed/"
@@ -52,6 +44,9 @@ java_program_for_testbed_class6="OnlyFromLectureStudioServerToPeers"
 # Class names for the Java programs used in validation
 java_program_for_validation_class1="ConnectionQuality"
 java_program_for_validation_class2="CompareFiles"
+
+declare -A calculated_times
+declare -A measured_times
 
 rm -f "$DELETE_FILE_PATH"
 
@@ -632,5 +627,3 @@ printf "\nStep Done: Writing all results into CSV file is done.\n"
         done
     done
 done
-
-printf "\nStopping Testbed.\n\n"
