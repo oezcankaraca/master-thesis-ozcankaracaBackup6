@@ -74,7 +74,7 @@ public class ConnectionDetails {
     // Default number of peers, use of super-peer, choice of size pdf file
     private static int numberOfPeers = 10;
     private static boolean useSuperPeers = true;
-    private static int choiceOfPdfMB = 1;
+    private static int choiceOfPdfMB = 2;
 
     private static int sizeOfPDF;
 
@@ -107,20 +107,20 @@ public class ConnectionDetails {
         }
 
         // Assigns the size of a PDF file based on the user's choice of file size in megabytes (MB).
-        if (choiceOfPdfMB == 1) {
-            sizeOfPDF = 1042157;
-        } else if (choiceOfPdfMB == 3) {
-            sizeOfPDF = 3197743;
-        } else if (choiceOfPdfMB == 5) {
-            sizeOfPDF = 5269767;
-        } else if (choiceOfPdfMB == 10) {
-            sizeOfPDF = 10705702;
-        } else if (choiceOfPdfMB == 15) {
-            sizeOfPDF = 15368312;
-        } else if (choiceOfPdfMB == 20) {
-            sizeOfPDF = 21408647;
-        } else if (choiceOfPdfMB == 30) {
-            sizeOfPDF = 32116471;
+        if (choiceOfPdfMB == 2) {
+            sizeOfPDF = 2239815;
+        } else if (choiceOfPdfMB == 4) {
+            sizeOfPDF = 4293938;
+        } else if (choiceOfPdfMB == 8) {
+            sizeOfPDF = 8869498;
+        } else if (choiceOfPdfMB == 16) {
+            sizeOfPDF = 15890720;
+        } else if (choiceOfPdfMB == 32) {
+            sizeOfPDF = 32095088;
+        } else if (choiceOfPdfMB == 64) {
+            sizeOfPDF = 63096545;
+        } else if (choiceOfPdfMB == 128) {
+            sizeOfPDF = 105255200;
         } 
 
         // Get the user's home directory path

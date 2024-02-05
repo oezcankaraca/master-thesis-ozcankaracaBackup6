@@ -385,7 +385,8 @@ for container_name in "${!measured_times[@]}"; do
             echo "$container_name"
             echo "Measured Time: $measured_time"
             echo "Calculated Time: $calculated_time"
-            printf "Transfer Time Fehler Rate: $error_rate%\n"
+            echo "Transfer Time Fehler Rate: $error_rate %"
+            echo ""
             
             if (( $(echo "$error_rate < $min_error_rate" | bc -l) )); then
                 min_error_rate=$error_rate
@@ -524,10 +525,10 @@ min_bandwidth_error_rate=${min_bandwidth_error_rate//,/\.}
 avg_bandwidth_error_rate=${avg_bandwidth_error_rate//,/\.}
 
 # Path for the file storing the test ID counter
-TEST_ID_FILE_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/results/test_id_counter5.txt"
+TEST_ID_FILE_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/results/test_id_counter.txt"
 
 # Incrementing the test ID for each run, or starting at 1 if the file doesn't exist
-if [ -f "$TEST_ID_FILE" ]; then
+if [ -f "$TEST_ID_FILE_PATH" ]; then
     test_id=$(<"$TEST_ID_FILE_PATH")
     test_id=$((test_id+1)) 
 else
@@ -603,9 +604,9 @@ echo "Minimum Bandwidth Error Rate: $min_bandwidth_error_rate %"
 echo "Avarage Bandwidth Error Rate: $avg_bandwidth_error_rate %"
 echo "Maximum Bandwidth Error Rate: $max_bandwidth_error_rate %"
 
-echo "Minimum Transfer Error Rate: $min_error_rate %"
-echo "Average Transfer Error Rate: $avg_error_rate %"
-echo "Maximum Transfer Error Rate: $max_error_rate %"
+echo "Minimum Transfer Time Error Rate: $min_error_rate %"
+echo "Average Transfer Time Error Rate: $avg_error_rate %"
+echo "Maximum Transfer Time Error Rate: $max_error_rate %"
 
 printf "\nTotal Duration: $total_duration_sec s\n"
 
@@ -614,15 +615,15 @@ printf "\nStep Done: Calculating all results is done.\n"
 printf "\nStep Started: Writing all results into CSV file.\n"
 
 # Path for the CSV file to store the results
-CSV_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed5.csv"
+CSV_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/results/results-testbed.csv"
 
 # Create a CSV file with headers if it doesn't already exist
 if [ ! -f "$CSV_PATH" ]; then
-    echo "TestID;Number of Peers;With Super-Peers;Total Duration [s];Minimum Transfer Time Error Rate [%];Average Transfer Time Error Rate [%];Maximum Transfer Time Error Rate [%];Same PDF File;Total Received Bytes;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%]" > "$CSV_PATH"
+    echo "TestID;Number of Peers;With Super-Peers;Total Duration [s];Total Received Bytes;Minimum Transfer Time Error Rate [%];Average Transfer Time Error Rate [%];Maximum Transfer Time Error Rate [%];Same PDF File;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%]" > "$CSV_PATH"
 fi
 
 # Append the current test results to the CSV file along with the new fields for error rates and total duration
-echo "Test$test_id;$number_of_peers;$has_superpeer;$total_duration_sec;$min_error_rate;$avg_error_rate;$max_error_rate;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate" >> "$CSV_PATH"
+echo "Test$test_id;$number_of_peers;$has_superpeer;$total_duration_sec;$total_received_bytes;$min_error_rate;$avg_error_rate;$max_error_rate;$all_containers_have_file;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate" >> "$CSV_PATH"
 
 printf "\nStep Done: Writing all results into CSV file is done.\n\n"
 

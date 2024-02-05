@@ -64,7 +64,7 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
      */
     public static void main(String[] args) throws InterruptedException {
 
-        System.out.println("\n**9.STEP: VALIDATION OF THE NETWORK CHARACTERISTICS**\n");
+        System.out.println("\nStep Started: Validation of the network characteristics.\n");
 
         // Parsing command-line arguments for number of peers.
         if (args.length > 0) {
@@ -86,14 +86,14 @@ public class ConnectionQuality extends YMLParserForConnectionQuality {
 
         displayFinalResults();
 
-        System.out.println("\n**9.STEP IS DONE.**\n");
+        System.out.println("\nStep Done: Validation of the network characteristics is done.\n");
 
         // Final test results
         if (allTestsSuccessful) {
-            System.out.println("\nInfo: All tests were successful.");
+            System.out.println("Success: All tests were successful.");
             System.exit(0);
         } else {
-            System.out.println("\nInfo: Some tests need to be repeated.");
+            System.out.println("Unsuccess: Some tests need to be repeated.");
             System.exit(1);
         }
     }
