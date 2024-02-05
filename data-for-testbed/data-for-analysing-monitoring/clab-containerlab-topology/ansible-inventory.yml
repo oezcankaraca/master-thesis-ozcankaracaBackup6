@@ -1,0 +1,25 @@
+all:
+  vars:
+    # The generated inventory is assumed to be used from the clab host.
+    # Hence no http proxy should be used. Therefore we make sure the http
+    # module does not attempt using any global http proxy.
+    ansible_httpapi_use_proxy: false
+  children:
+    linux:
+      vars:
+        # ansible_connection: set ansible_connection variable if required
+      hosts:
+        p2p-containerlab-topology-1:
+          ansible_host: 172.100.100.3
+        p2p-containerlab-topology-2:
+          ansible_host: 172.100.100.5
+        p2p-containerlab-topology-3:
+          ansible_host: 172.100.100.6
+        p2p-containerlab-topology-4:
+          ansible_host: 172.100.100.2
+        p2p-containerlab-topology-5:
+          ansible_host: 172.100.100.4
+        p2p-containerlab-topology-lectureStudioServer:
+          ansible_host: 172.100.100.12
+        p2p-containerlab-topology-trackerPeer:
+          ansible_host: 172.100.100.11

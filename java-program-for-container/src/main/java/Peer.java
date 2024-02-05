@@ -326,7 +326,7 @@ public class Peer {
         }        
 
         // Validation
-        //Thread.sleep(numberOfPeers * 30000);
+        Thread.sleep(numberOfPeers * 30000);
         System.out.println("Info: Number Of Total Containers in the Testbed: " + numberOfPeers);
 
         int portLectureStudioServer = 7070;

@@ -18,38 +18,34 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 /**
  * 
- * - The LectureStudioServer class is designed to act as a server in a
- * distributed
- * - system,
- * - primarily for conducting network performance tests. This class is capable
- * of
- * - running server instances
- * - on multiple IP addresses simultaneously, handling connections and file
- * - transfers to multiple clients.
- * -
- * - It uses the Netty framework for efficient network communication, setting up
- * - server bootstrap and
- * - channel handlers to manage incoming network traffic. The class is capable
- * of
- * - binding to different
- * - IP addresses, specified during its initialization, and listens on a
- * - designated port for incoming connections. Key functionalities include
- * - starting server instances on
- * - specified IP addresses, handling file sending operations, and logging
- * - critical network performance metrics
- * - such as file send duration.
- * -
- * - The server's operation is highly dependent on environment variables that
- * - dictate the network topology
- * - and parameters, making it adaptable for various testing scenarios. The
- * - ability to extract IP addresses
- * - from environment settings and to run multiple instances makes this class
- * - suitable for complex network
- * - environments where simultaneous connections from different network nodes
- * are
- * - required.
- * -
- * - @author Özcan Karaca
+ * The LectureStudioServer class is designed to act as a server in a distributed
+ * system,
+ * primarily for conducting network performance tests. This class is capable of
+ * running server instances
+ * on multiple IP addresses simultaneously, handling connections and file
+ * transfers to multiple clients.
+ * 
+ * It uses the Netty framework for efficient network communication, setting up
+ * server bootstrap and
+ * channel handlers to manage incoming network traffic. The class is capable of
+ * binding to different
+ * IP addresses, specified during its initialization, and listens on a
+ * designated port for incoming
+ * connections. Key functionalities include starting server instances
+ * onspecified IP addresses,
+ * handling file sending operations, and logging critical network performance
+ * metrics such as file send duration.
+ * 
+ * The server's operation is highly dependent on environment variables that
+ * dictate the network topology
+ * and parameters, making it adaptable for various testing scenarios. The
+ * ability to extract IP addresses
+ * from environment settings and to run multiple instances makes this class
+ * suitable for complex network
+ * environments where simultaneous connections from different network nodes are
+ * required.
+ * 
+ * @author Özcan Karaca
  */
 public class LectureStudioServer {
 
@@ -199,11 +195,11 @@ public class LectureStudioServer {
         int trackerPeerPort = 5050; // Port of the tracker peer
         int maxAttempts = 100000;
         int attempt = 0;
-    
+
         while (attempt < maxAttempts) {
             try (Socket socket = new Socket(trackerPeerHost, trackerPeerPort);
                     OutputStream out = socket.getOutputStream()) {
-    
+
                 String confirmationMessage = "CONFIRMATION\n";
                 out.write(confirmationMessage.getBytes());
                 out.flush(); // Stellen Sie sicher, dass die Daten gesendet werden.
@@ -214,7 +210,7 @@ public class LectureStudioServer {
                         + "): " + e.getMessage());
                 e.printStackTrace();
             }
-    
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ie) {
@@ -222,14 +218,13 @@ public class LectureStudioServer {
                 System.err.println("Info: Waiting period interrupted: " + ie.getMessage());
                 return;
             }
-    
+
             attempt++;
         }
         // Log a message if connection could not be established after maximum attempts
         System.err.println("Error: Connection to TrackerPeer could not be established after " + maxAttempts
                 + " attempts.");
-    }    
-    
+    }
 
     /**
      * 
@@ -316,7 +311,7 @@ public class LectureStudioServer {
                 Thread.sleep(150000);
                 break;
             case 36:
-                Thread.sleep(250000);    
+                Thread.sleep(250000);
                 break;
             case 51:
                 Thread.sleep(350000);
@@ -331,12 +326,12 @@ public class LectureStudioServer {
                 Thread.sleep(1200000);
                 break;
             default:
-            // Handle any other number of peers that doesn't match above cases
+                // Handle any other number of peers that doesn't match above cases
                 break;
-        } 
+        }
 
         // Validation of he Network Characteristics
-        // Thread.sleep(numberOfPeers * 30000);
+        Thread.sleep(numberOfPeers * 30000);
         System.out.println("Info: Number Of Total Containers in the Testbed: " + numberOfPeers);
 
         List<String> formattedPeers = new ArrayList<>();

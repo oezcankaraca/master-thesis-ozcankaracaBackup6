@@ -182,7 +182,7 @@ run_validation() {
 
 # Executing the testbed setup and validation process
 testbed_and_containerlab
-#run_validation
+run_validation
 
 # Check if the previous command was successful
 if [ $? -eq 0 ]; then
@@ -196,7 +196,7 @@ else
    
     # Executing the testbed setup and validation process again
     testbed_and_containerlab
-    #run_validation
+    run_validation
 fi
 
 printf "\nInfo: Validation is done.\n"
@@ -385,8 +385,7 @@ for container_name in "${!measured_times[@]}"; do
             echo "$container_name"
             echo "Measured Time: $measured_time"
             echo "Calculated Time: $calculated_time"
-            echo "Transfer Time Fehler Rate: $error_rate%"
-            echo ""
+            printf "Transfer Time Fehler Rate: $error_rate%\n"
             
             if (( $(echo "$error_rate < $min_error_rate" | bc -l) )); then
                 min_error_rate=$error_rate
@@ -464,18 +463,18 @@ printf "\n----------------------------------------------------------------------
 printf "\nInfo: Container check completed. Cleaning up the environment.\n"
 printf "\nStep Done: Checking Container logs is done.\n"
 
-#sleep 20 
+sleep 20 
 
-#cd "$JAVA_PROGRAM_FOR_VALIDATION_PATH"
-#all_containers_have_file=false
+cd "$JAVA_PROGRAM_FOR_VALIDATION_PATH"
+all_containers_have_file=false
 
-#while IFS= read -r line; do
-#    echo "$line" 
-#    if [[ "$line" == "Info: All containers have the same file based on the hash values." ]]; then
-#        all_containers_have_file=true
-#    fi
-#done < <(mvn -q exec:java -Dexec.mainClass="$java_program_for_validation_class2" -Dexec.args="$NUMBER_OF_PEERS_ARG")
-#sleep 5
+while IFS= read -r line; do
+    echo "$line" 
+    if [[ "$line" == "Info: All containers have the same file based on the hash values." ]]; then
+        all_containers_have_file=true
+    fi
+done < <(mvn -q exec:java -Dexec.mainClass="$java_program_for_validation_class2" -Dexec.args="$NUMBER_OF_PEERS_ARG")
+sleep 5
 
 printf "\nStep Started: Cleaning up the testbed.\n"
 
@@ -490,10 +489,9 @@ sleep 5
 if [ "$enable_cleanup_for_image" == "true" ]; then
     # Checking if any containers using the 'image-testbed' image are still running
     if [ -z "$(docker ps -q --filter ancestor=image-testbed)" ]; then
-        printf "Info: All Containers have stopped.\n"
-        echo ""
-        echo "Deleting Docker image:"
-        echo ""
+        printf "Info: All Containers have stopped.\n\n"
+        printf "Deleting Docker image:\n"
+
         docker image rm image-testbed
         docker image rm image-tracker
         docker image rm image-cadvisor
@@ -620,11 +618,11 @@ CSV_PATH="$BASE_PATH/master-thesis-ozcankaraca/data-for-testbed/results/results-
 
 # Create a CSV file with headers if it doesn't already exist
 if [ ! -f "$CSV_PATH" ]; then
-    echo "TestID;Number of Peers;With Super-Peers;Total Duration [s];Same PDF File;Total Received Bytes;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%];Minimum Transfer Error Rate [%];Average Transfer Error Rate [%];Maximum Transfer Error Rate [%]" > "$CSV_PATH"
+    echo "TestID;Number of Peers;With Super-Peers;Total Duration [s];Minimum Transfer Time Error Rate [%];Average Transfer Time Error Rate [%];Maximum Transfer Time Error Rate [%];Same PDF File;Total Received Bytes;Maximum Connection Time [s];Minimum Connection Time [s];Average Connection Time [s];Maximum Transfer Time [s];Minimum Transfer Time [s];Average Transfer Time [s];Maximum Total Time [s];Minimum Total Time [s];Average Total Time [s];Maximum Latency Error Rate [%];Minimum Latency Error Rate [%];Average Latency Error Rate [%];Maximum Bandwidth Error Rate [%];Minimum Bandwidth Error Rate [%];Average Bandwidth Error Rate [%]" > "$CSV_PATH"
 fi
 
 # Append the current test results to the CSV file along with the new fields for error rates and total duration
-echo "Test$test_id;$(($number_of_peers + 1));$has_superpeer;$total_duration_sec;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate;$min_error_rate;$avg_error_rate;$max_error_rate" >> "$CSV_PATH"
+echo "Test$test_id;$number_of_peers;$has_superpeer;$total_duration_sec;$min_error_rate;$avg_error_rate;$max_error_rate;$all_containers_have_file;$total_received_bytes;$max_connection_time_sec;$min_connection_time_sec;$avg_connection_time_sec;$max_transfer_time_sec;$min_transfer_time_sec;$avg_transfer_time_sec;$max_total_time_sec;$min_total_time_sec;$avg_total_time_sec;$max_latency_error_rate;$min_latency_error_rate;$avg_latency_error_rate;$max_bandwidth_error_rate;$min_bandwidth_error_rate;$avg_bandwidth_error_rate" >> "$CSV_PATH"
 
 printf "\nStep Done: Writing all results into CSV file is done.\n\n"
 
