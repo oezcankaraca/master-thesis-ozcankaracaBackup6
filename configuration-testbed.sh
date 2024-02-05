@@ -233,7 +233,7 @@ count_containers=0
 all_containers_processed=true
 
 for id in $container_ids; do
-    container_name=$(sudo docker inspect --format '{{.Name}}' "$id" | sed 's/^\/\+//')  # Remove leading slashes from container name 
+    container_name=$(docker inspect --format '{{.Name}}' "$id" | sed 's/^\/\+//') 
     
     if [[ "$container_name" == "p2p-containerlab-topology-trackerPeer" ]]; then
             trackerPeerId="$id"
